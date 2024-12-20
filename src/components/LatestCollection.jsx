@@ -15,7 +15,7 @@ const LatestCollection = () => {
     <section className="py-16 px-4 mx-auto max-w-7xl">
       <div className="text-center mb-12">
         <Title text1="LATEST " text2="COLLECTION" />
-        <p className="max-w-2xl mx-auto text-sm text-gray-600">
+        <p className="max-w-2xl  text-sm text-gray-600">
           Unveil Stitch & Style's latest collection, crafted to redefine
           elegance and celebrate your unique style.
         </p>

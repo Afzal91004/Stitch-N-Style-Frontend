@@ -14,9 +14,9 @@ const InDemand = () => {
 
   return (
     <section className="pt-16 pb-1 px-4 mx-auto max-w-7xl">
-      <div className="text-center mb-12">
+      <div className=" mb-12">
         <Title text1="IN-DEMAND " text2="STYLES" />
-        <p className="max-w-2xl mx-auto text-sm text-gray-600">
+        <p className="max-w-2xl  text-sm text-gray-600">
           Crafted for style, chosen by Many
         </p>
       </div>
