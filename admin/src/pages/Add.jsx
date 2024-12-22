@@ -215,6 +215,7 @@ const Add = ({ token }) => {
         toast.success("Product added successfully!");
         resetForm();
       } else {
+        toast.error(response.data.message);
         throw new Error(response.data.message);
       }
     } catch (error) {
