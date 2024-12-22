@@ -8,25 +8,34 @@ const InDemand = () => {
   const [inDemand, setInDemand] = useState([]);
 
   useEffect(() => {
-    const inDemandProduct = products.filter((item) => item.inDemand);
-    setInDemand(inDemandProduct.slice(0, 5));
+    console.log("Products from context:", products);
+    if (products) {
+      const inDemandProduct = products.filter((item) => item.bestSeller);
+      console.log("Filtered inDemand products:", inDemandProduct);
+      setInDemand(inDemandProduct.slice(0, 5));
+    }
   }, [products]);
+
+  if (!products) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <section className="pt-16 pb-1 px-4 mx-auto max-w-7xl">
-      <div className=" mb-12">
+      <div className="mb-12">
         <Title text1="IN-DEMAND " text2="STYLES" />
-        <p className="max-w-2xl  text-sm text-gray-600">
-          Crafted for style, chosen by Many
+        <p className="max-w-2xl text-sm text-gray-600">
+          Crafted for style, chosen by many
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {inDemand.map((item, index) => (
+        {inDemand.map((item) => (
           <ProductItem
-            key={index}
+            key={item._id}
             id={item._id}
             image={item.image}
+            imageAlt={`${item.name} product image`}
             name={item.name}
             price={item.price}
           />
