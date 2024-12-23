@@ -18,6 +18,10 @@ const Cart = () => {
       for (const item in cartItems[items]) {
         if (cartItems[items][item] > 0) {
           const productData = products.find((product) => product._id === items);
+
+          // Skip if product not found
+          if (!productData) continue;
+
           const itemTotal = productData.price * cartItems[items][item];
 
           tempData.push({

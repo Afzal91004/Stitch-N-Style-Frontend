@@ -18,7 +18,8 @@ const Header = () => {
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
 
-  const { setShowSearch, showSearch, getCartCount } = useContext(ShopContext);
+  const { setShowSearch, showSearch, getCartCount, logout } =
+    useContext(ShopContext);
 
   // Handle clicks outside dropdown
   useEffect(() => {
@@ -40,7 +41,12 @@ const Header = () => {
     { icon: <FaUser size={16} />, text: "My Profile", link: "/profile" },
     { icon: <GiShoppingBag size={16} />, text: "Orders", link: "/orders" },
     { icon: <FaHistory size={16} />, text: "Order History", link: "/history" },
-    { icon: <FiLogOut size={16} />, text: "Logout", link: "/logout" },
+    {
+      icon: <FiLogOut size={16} />,
+      text: "Logout",
+      onClick: logout,
+      isLogout: true,
+    },
   ];
 
   return (
@@ -97,20 +103,19 @@ const Header = () => {
 
           {/* User Dropdown */}
           <div className="relative" ref={dropdownRef}>
-            <Link to={"/login"}>
-              <button
-                ref={buttonRef}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                onClick={() => setDropdownVisible(!dropdownVisible)}
-                onMouseEnter={() => setDropdownVisible(true)}
-              >
-                <FaRegUserCircle
-                  size={20}
-                  className="text-gray-600 hover:text-black transition-colors"
-                />
-              </button>
-              <div
-                className={`
+            <button
+              ref={buttonRef}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              onClick={() => setDropdownVisible(!dropdownVisible)}
+              onMouseEnter={() => setDropdownVisible(true)}
+            >
+              <FaRegUserCircle
+                size={20}
+                className="text-gray-600 hover:text-black transition-colors"
+              />
+            </button>
+            <div
+              className={`
                 absolute right-0 mt-2 bg-white shadow-lg rounded-lg w-48 overflow-hidden
                 transform transition-all duration-200 origin-top-right
                 ${
@@ -119,35 +124,45 @@ const Header = () => {
                     : "scale-95 opacity-0 pointer-events-none"
                 }
               `}
-                onMouseLeave={() => setDropdownVisible(false)}
-              >
-                <div className="py-2">
-                  {dropdownItems.map((item, index) => (
+              onMouseLeave={() => setDropdownVisible(false)}
+            >
+              <div className="py-2">
+                {dropdownItems.map((item, index) =>
+                  item.isLogout ? (
+                    <button
+                      key={index}
+                      onClick={item.onClick}
+                      className={`
+          w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-gray-50
+          hover:text-red-700 transition-colors duration-200 text-sm
+          ${
+            index !== dropdownItems.length - 1 ? "border-b border-gray-100" : ""
+          }
+        `}
+                    >
+                      <span className="text-current">{item.icon}</span>
+                      {item.text}
+                    </button>
+                  ) : (
                     <Link
                       key={index}
                       to={item.link}
                       className={`
-                      flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50
-                      transition-colors duration-200 text-sm
-                      ${
-                        index !== dropdownItems.length - 1
-                          ? "border-b border-gray-100"
-                          : ""
-                      }
-                      ${
-                        item.text === "Logout"
-                          ? "text-red-600 hover:text-red-700"
-                          : "hover:text-black"
-                      }
-                    `}
+          flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50
+          transition-colors duration-200 text-sm
+          ${
+            index !== dropdownItems.length - 1 ? "border-b border-gray-100" : ""
+          }
+          hover:text-black
+        `}
                     >
                       <span className="text-current">{item.icon}</span>
                       {item.text}
                     </Link>
-                  ))}
-                </div>
+                  )
+                )}
               </div>
-            </Link>
+            </div>
           </div>
 
           {/* Cart Icon */}

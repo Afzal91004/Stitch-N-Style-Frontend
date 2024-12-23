@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ShopContext } from "../context/ShopContext";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [currentState, setCurrentState] = useState("Login");
@@ -9,22 +12,62 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const { token, setToken, backendUrl } = useContext(ShopContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (token) {
+      const from = location.state?.from?.pathname || "/";
+      navigate(from);
+    }
+  }, [token, navigate, location]);
+
   const onSubmitHandler = async (event) => {
     event.preventDefault();
 
-    if (currentState === "Login") {
-      // Login logic
-      console.log("Login attempted");
-    } else {
-      // Signup logic
-      if (password !== confirmPassword) {
-        toast.error("Passwords do not match!", {
-          position: "top-right",
-          autoClose: 3000,
+    try {
+      if (currentState === "Login") {
+        // Login logic
+        const response = await axios.post(`${backendUrl}/api/user/login`, {
+          email,
+          password,
         });
-        return;
+
+        if (response.data.token) {
+          localStorage.setItem("token", response.data.token); // Fixed this line
+          setToken(response.data.token);
+          toast.success("Login successful!", {
+            autoClose: 5000,
+            closeOnClick: true,
+          });
+
+          // Navigate to the protected route the user was trying to access
+          const from = location.state?.from?.pathname || "/";
+          navigate(from);
+        }
+      } else {
+        // Signup logic
+        if (password !== confirmPassword) {
+          toast.error("Passwords do not match!");
+          return;
+        }
+
+        const response = await axios.post(`${backendUrl}/api/user/register`, {
+          name,
+          email,
+          password,
+        });
+
+        if (response.data.success) {
+          toast.success("Account created successfully! Please login.");
+          setCurrentState("Login");
+        }
       }
-      console.log("Signup attempted");
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "An error occurred";
+      toast.error(errorMessage);
     }
   };
 
@@ -141,8 +184,14 @@ const Login = () => {
           </div>
         </div>
       </div>
-
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        closeOnClick={true}
+        pauseOnHover={true}
+        draggable={true}
+      />
     </div>
   );
 };

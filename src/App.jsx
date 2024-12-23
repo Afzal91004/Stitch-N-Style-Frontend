@@ -1,5 +1,11 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import {
   About,
   Cart,
@@ -19,8 +25,39 @@ import Footer from "./components/Footer";
 import SearchBar from "./components/SearchBar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ShopContext } from "./context/ShopContext";
+
+const ProtectedRoute = ({ children }) => {
+  const { token } = useContext(ShopContext);
+  const location = useLocation();
+
+  if (!token) {
+    // Redirect to login while saving the attempted url
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return children;
+};
 
 const App = () => {
+  const { token } = useContext(ShopContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Handle authentication status changes
+  useEffect(() => {
+    const isProtectedRoute = [
+      "/cart",
+      "/custom-cloth",
+      "/orders",
+      "/place-order",
+      "/",
+    ].includes(location.pathname);
+    if (!token && isProtectedRoute) {
+      navigate("/login", { state: { from: location } });
+    }
+  }, [token, location, navigate]);
+
   return (
     <div>
       <ToastContainer
@@ -37,19 +74,52 @@ const App = () => {
       <Header />
       <SearchBar />
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* Public Routes */}
         <Route path="/about" element={<About />} />
-        <Route path="/cart" element={<Cart />} />
         <Route path="/collection" element={<Collection />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/custom-cloth" element={<CustomCloth />} />
         <Route path="/designers" element={<Designers />} />
-        <Route path="/product/:productId" element={<Product />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/policy" element={<Policy />} />
+        <Route path="/product/:productId" element={<Product />} />
         <Route path="/product" element={<Product />} />
+
+        {/* Protected Routes */}
+        <Route path="/" element={<Home />} />
+
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/custom-cloth"
+          element={
+            <ProtectedRoute>
+              <CustomCloth />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/place-order"
+          element={
+            <ProtectedRoute>
+              <PlaceOrder />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       <Footer />
     </div>
