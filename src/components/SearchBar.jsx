@@ -67,7 +67,6 @@ const SearchBar = () => {
     setSearch("");
     setSearchResults([]);
 
-    // If on search results page, navigate back to collection
     if (window.location.pathname === "/search-results") {
       navigate("/collection");
     }

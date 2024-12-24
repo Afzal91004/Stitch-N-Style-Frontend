@@ -32,7 +32,6 @@ const ProtectedRoute = ({ children }) => {
   const location = useLocation();
 
   if (!token) {
-    // Redirect to login while saving the attempted url
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
@@ -44,7 +43,6 @@ const App = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Handle authentication status changes
   useEffect(() => {
     const isProtectedRoute = [
       "/cart",

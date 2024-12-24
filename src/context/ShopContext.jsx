@@ -203,6 +203,24 @@ const ShopContextProvider = ({ children }) => {
     }
   };
 
+  const clearCart = async () => {
+    if (!token) return;
+
+    setCartLoading(true);
+    try {
+      const response = await axios.post(`${backendUrl}/api/cart/clear`);
+      if (response.data.success) {
+        setCartItems({});
+      } else {
+        throw new Error(response.data.message || "Failed to clear cart");
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to clear cart");
+    } finally {
+      setCartLoading(false);
+    }
+  };
+
   const contextValue = {
     products,
     filteredProducts,
@@ -224,6 +242,7 @@ const ShopContextProvider = ({ children }) => {
     setToken,
     loading,
     cartLoading,
+    clearCart,
     logout: handleLogout,
   };
 

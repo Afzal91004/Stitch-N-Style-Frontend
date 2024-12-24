@@ -16,7 +16,6 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Redirect if already logged in
   useEffect(() => {
     if (token) {
       const from = location.state?.from?.pathname || "/";
@@ -29,26 +28,23 @@ const Login = () => {
 
     try {
       if (currentState === "Login") {
-        // Login logic
         const response = await axios.post(`${backendUrl}/api/user/login`, {
           email,
           password,
         });
 
         if (response.data.token) {
-          localStorage.setItem("token", response.data.token); // Fixed this line
+          localStorage.setItem("token", response.data.token);
           setToken(response.data.token);
           toast.success("Login successful!", {
             autoClose: 5000,
             closeOnClick: true,
           });
 
-          // Navigate to the protected route the user was trying to access
           const from = location.state?.from?.pathname || "/";
           navigate(from);
         }
       } else {
-        // Signup logic
         if (password !== confirmPassword) {
           toast.error("Passwords do not match!");
           return;

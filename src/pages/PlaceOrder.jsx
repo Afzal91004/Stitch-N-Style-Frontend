@@ -13,6 +13,7 @@ import { ShopContext } from "../context/ShopContext";
 import CartSummary from "../components/CartSummary";
 import { assets } from "../assets/frontend_assets/assets";
 import { Toaster, toast } from "sonner";
+import axios from "axios";
 
 const PaymentMethodButton = ({
   method,
@@ -22,6 +23,7 @@ const PaymentMethodButton = ({
   onClick,
 }) => (
   <button
+    type="button"
     onClick={onClick}
     className={`
       relative flex items-center justify-center gap-3 border-2 p-3 rounded-lg transition-all duration-300 group
@@ -62,9 +64,18 @@ const PaymentMethodButton = ({
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState(null);
-  const { navigate } = useContext(ShopContext);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const {
+    navigate,
+    backendUrl,
+    token,
+    cartItems,
+    getCartAmount,
+    deliveryFee,
+    products,
+    clearCart,
+  } = useContext(ShopContext);
 
-  // State for form fields
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -92,7 +103,6 @@ const PlaceOrder = () => {
     },
   ];
 
-  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -101,7 +111,10 @@ const PlaceOrder = () => {
     }));
   };
 
-  // Validate form
+  const handleMethodSelection = (selectedMethod) => {
+    setMethod(selectedMethod);
+  };
+
   const validateForm = () => {
     const requiredFields = [
       "firstName",
@@ -135,10 +148,68 @@ const PlaceOrder = () => {
     return true;
   };
 
-  // Proceed to payment
-  const handleProceedToPayment = () => {
-    if (validateForm()) {
-      navigate("/orders");
+  const handleOrderSuccess = async () => {
+    await clearCart();
+    toast.success("Order placed successfully!", {
+      description: "Your order has been confirmed.",
+      icon: <CheckCircle className="text-green-500" />,
+    });
+    setTimeout(() => navigate("/orders"), 1500);
+  };
+
+  const onSubmitHandler = async (event) => {
+    event.preventDefault();
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    try {
+      let orderItems = [];
+
+      Object.entries(cartItems).forEach(([productId, sizes]) => {
+        Object.entries(sizes).forEach(([size, quantity]) => {
+          if (quantity > 0) {
+            const itemInfo = products.find(
+              (product) => product._id === productId
+            );
+            if (itemInfo) {
+              orderItems.push({
+                ...structuredClone(itemInfo),
+                size: size,
+                quantity: quantity,
+              });
+            }
+          }
+        });
+      });
+
+      let orderData = {
+        items: orderItems,
+        amount: getCartAmount() + deliveryFee,
+        address: formData,
+        paymentMethod: method,
+      };
+
+      const response = await axios.post(
+        `${backendUrl}/api/order/place`,
+        orderData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        await handleOrderSuccess();
+      } else {
+        toast.error(response.data.message || "Failed to place order");
+      }
+    } catch (error) {
+      console.error("Error processing order:", error);
+      toast.error(error.response?.data?.message || "Failed to place order");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -146,7 +217,7 @@ const PlaceOrder = () => {
     <div className="container mx-auto px-4 py-8 lg:px-12 bg-gray-50 min-h-screen">
       <Toaster position="top-right" richColors />
 
-      <div className="grid lg:grid-cols-2 gap-8">
+      <form onSubmit={onSubmitHandler} className="grid lg:grid-cols-2 gap-8">
         {/* Delivery Information */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
           <div className="flex items-center gap-4 mb-6 border-b pb-4">
@@ -336,27 +407,32 @@ const PlaceOrder = () => {
                   selectedMethod={method}
                   logo={logo}
                   label={label}
-                  onClick={() => setMethod(methodItem)}
+                  onClick={() => handleMethodSelection(methodItem)}
                 />
               ))}
             </div>
 
             <button
-              onClick={handleProceedToPayment}
+              type="submit"
+              disabled={isSubmitting || !method}
               className={`
-                w-full py-4 rounded-lg mt-8 text-lg font-semibold tracking-wide uppercase transition-all duration-300
-                ${
-                  method
-                    ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }
-              `}
+            w-full py-4 rounded-lg mt-8 text-lg font-semibold tracking-wide uppercase transition-all duration-300
+            ${
+              method && !isSubmitting
+                ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }
+          `}
             >
-              {method ? "Proceed to Payment" : "Select Payment Method"}
+              {isSubmitting
+                ? "Processing..."
+                : method
+                ? "Proceed to Payment"
+                : "Select Payment Method"}
             </button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
