@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   ShoppingCart,
   CreditCard,
@@ -14,6 +14,10 @@ import CartSummary from "../components/CartSummary";
 import { assets } from "../assets/frontend_assets/assets";
 import { Toaster, toast } from "sonner";
 import axios from "axios";
+
+// Replace with your actual Razorpay key
+const RAZORPAY_KEY_ID =
+  import.meta.env.VITE_RAZORPAY_KEY_ID || process.env.REACT_APP_RAZORPAY_KEY_ID;
 
 const PaymentMethodButton = ({
   method,
@@ -65,6 +69,8 @@ const PaymentMethodButton = ({
 const PlaceOrder = () => {
   const [method, setMethod] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
+
   const {
     navigate,
     backendUrl,
@@ -92,16 +98,39 @@ const PlaceOrder = () => {
     {
       method: "stripe",
       logo: assets.stripe_logo,
+      endpoint: "/api/order/stripe",
     },
     {
       method: "razorpay",
       logo: assets.razorpay_logo,
+      endpoint: "/api/order/razorpay",
     },
     {
       method: "cod",
       label: "CASH ON DELIVERY",
+      endpoint: "/api/order/place-cod",
     },
   ];
+
+  useEffect(() => {
+    const loadRazorpay = async () => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.async = true;
+      script.onload = () => setIsRazorpayLoaded(true);
+      document.body.appendChild(script);
+    };
+    loadRazorpay();
+
+    return () => {
+      const script = document.querySelector(
+        'script[src="https://checkout.razorpay.com/v1/checkout.js"]'
+      );
+      if (script) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -148,13 +177,102 @@ const PlaceOrder = () => {
     return true;
   };
 
-  const handleOrderSuccess = async () => {
+  const handleOrderSuccess = async (redirectUrl = null) => {
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+      return;
+    }
+
     await clearCart();
     toast.success("Order placed successfully!", {
       description: "Your order has been confirmed.",
       icon: <CheckCircle className="text-green-500" />,
     });
     setTimeout(() => navigate("/orders"), 1500);
+  };
+
+  const processRazorpayPayment = async (orderResponse) => {
+    if (!isRazorpayLoaded || !window.Razorpay) {
+      toast.error("Payment gateway is not loaded. Please try again.");
+      return;
+    }
+
+    if (!RAZORPAY_KEY_ID) {
+      toast.error("Payment configuration is missing.");
+      return;
+    }
+
+    const options = {
+      key: RAZORPAY_KEY_ID,
+      amount: orderResponse.order.amount,
+      currency: "INR",
+      name: "Your Shop Name",
+      description: "Purchase Payment",
+      order_id: orderResponse.order.id,
+      prefill: {
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        contact: formData.phoneNumber,
+      },
+      handler: async function (response) {
+        try {
+          // Fix: Update the verification endpoint URL to match the backend route
+          const verificationResponse = await axios.post(
+            `${backendUrl}/api/order/verifyRazorpay`, // Changed from /api/orders/verifyRazorpay
+            {
+              orderId: orderResponse.orderId,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (verificationResponse.data.success) {
+            await handleOrderSuccess();
+          } else {
+            toast.error(
+              verificationResponse.data.message || "Payment verification failed"
+            );
+          }
+        } catch (error) {
+          console.error("Verification error:", error);
+          toast.error(
+            error.response?.data?.message || "Payment verification failed"
+          );
+
+          // Add more detailed error logging
+          if (error.response) {
+            console.error("Error response:", {
+              status: error.response.status,
+              data: error.response.data,
+              headers: error.response.headers,
+            });
+          }
+        }
+      },
+      modal: {
+        ondismiss: function () {
+          toast.error("Payment cancelled");
+        },
+      },
+      theme: {
+        color: "#3B82F6",
+      },
+    };
+
+    try {
+      const razorpayInstance = new window.Razorpay(options);
+      razorpayInstance.open();
+    } catch (error) {
+      console.error("Razorpay initialization error:", error);
+      toast.error("Failed to initialize payment");
+    }
   };
 
   const onSubmitHandler = async (event) => {
@@ -182,15 +300,18 @@ const PlaceOrder = () => {
         });
       });
 
-      let orderData = {
+      const selectedPaymentMethod = paymentMethods.find(
+        (pm) => pm.method === method
+      );
+
+      const orderData = {
         items: orderItems,
         amount: getCartAmount() + deliveryFee,
         address: formData,
-        paymentMethod: method,
       };
 
       const response = await axios.post(
-        `${backendUrl}/api/order/place`,
+        `${backendUrl}${selectedPaymentMethod.endpoint}`,
         orderData,
         {
           headers: {
@@ -201,7 +322,19 @@ const PlaceOrder = () => {
       );
 
       if (response.data.success) {
-        await handleOrderSuccess();
+        switch (method) {
+          case "stripe":
+            await handleOrderSuccess(response.data.session_url);
+            break;
+          case "razorpay":
+            await processRazorpayPayment(response.data);
+            break;
+          case "cod":
+            await handleOrderSuccess();
+            break;
+          default:
+            toast.error("Invalid payment method");
+        }
       } else {
         toast.error(response.data.message || "Failed to place order");
       }
@@ -416,18 +549,20 @@ const PlaceOrder = () => {
               type="submit"
               disabled={isSubmitting || !method}
               className={`
-            w-full py-4 rounded-lg mt-8 text-lg font-semibold tracking-wide uppercase transition-all duration-300
-            ${
-              method && !isSubmitting
-                ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }
-          `}
+                  w-full py-4 rounded-lg mt-8 text-lg font-semibold tracking-wide uppercase transition-all duration-300
+                  ${
+                    method && !isSubmitting
+                      ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }
+                `}
             >
               {isSubmitting
                 ? "Processing..."
                 : method
-                ? "Proceed to Payment"
+                ? `Pay ${getCartAmount() + deliveryFee} ${
+                    method === "stripe" ? "USD" : "INR"
+                  }`
                 : "Select Payment Method"}
             </button>
           </div>

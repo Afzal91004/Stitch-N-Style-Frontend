@@ -19,6 +19,7 @@ import {
   PlaceOrder,
   Policy,
   Product,
+  Verify,
 } from "./pages/index";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -84,7 +85,7 @@ const App = () => {
 
         {/* Protected Routes */}
         <Route path="/" element={<Home />} />
-
+        <Route path="/verify" element={<Verify />} />
         <Route
           path="/cart"
           element={

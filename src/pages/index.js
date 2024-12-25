@@ -10,3 +10,4 @@ export { default as Product } from "./Product";
 export { default as CustomCloth } from "./CustomCloth";
 export { default as Designers } from "./Designers";
 export { default as Policy } from "./Policy";
+export { default as Verify } from "./Verify";
