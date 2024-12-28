@@ -4,7 +4,6 @@ import Title from "../components/Title";
 const Contact = () => {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Title Section */}
       <div className="ml-8 py-8  text-white">
         <Title text1="Contact " text2="Us" />
         <p className="mt-2 text-lg text-black">
@@ -12,7 +11,7 @@ const Contact = () => {
         </p>
       </div>
 
-      {/* Contact Content */}
+      
       <div className="container mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Contact Information */}
         <div className="bg-white shadow-md rounded-md p-6">
