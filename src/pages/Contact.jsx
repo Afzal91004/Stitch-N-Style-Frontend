@@ -62,6 +62,8 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+      <ToastContainer position="bottom-right" />
+
       <div className="px-8 py-12">
         <Title text1="Contact " text2="Us" />
         <p className="mt-4 text-lg text-gray-600 max-w-2xl">
@@ -222,7 +224,6 @@ const Contact = () => {
           </form>
         </div>
       </div>
-      <ToastContainer position="bottom-right" />
     </div>
   );
 };
