@@ -102,7 +102,7 @@ const Contact = () => {
                 <p className="text-gray-600 mt-1">
                   We usually respond within 24 hours
                   <br />
-                  <span className="font-medium">tailorcue@gmail.com</span>
+                  <span className="font-medium">kromaapps@gmail.com</span>
                 </p>
               </div>
             </div>
@@ -116,7 +116,7 @@ const Contact = () => {
                 <p className="text-gray-600 mt-1">
                   For complaints or feedback, email us at
                   <br />
-                  <span className="font-medium">tailorcue@gmail.com</span>
+                  <span className="font-medium">kromaapps@gmail.com</span>
                 </p>
               </div>
             </div>
