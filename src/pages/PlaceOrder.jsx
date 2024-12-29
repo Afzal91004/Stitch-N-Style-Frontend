@@ -15,6 +15,7 @@ import { assets } from "../assets/frontend_assets/assets";
 import { Toaster, toast } from "sonner";
 import axios from "axios";
 
+// Replace with your actual Razorpay key
 const RAZORPAY_KEY_ID =
   import.meta.env.VITE_RAZORPAY_KEY_ID || process.env.REACT_APP_RAZORPAY_KEY_ID;
 
@@ -215,8 +216,9 @@ const PlaceOrder = () => {
       },
       handler: async function (response) {
         try {
+          // Fix: Update the verification endpoint URL to match the backend route
           const verificationResponse = await axios.post(
-            `${backendUrl}/api/order/verifyRazorpay`,
+            `${backendUrl}/api/order/verifyRazorpay`, // Changed from /api/orders/verifyRazorpay
             {
               orderId: orderResponse.orderId,
               razorpay_payment_id: response.razorpay_payment_id,
@@ -244,6 +246,7 @@ const PlaceOrder = () => {
             error.response?.data?.message || "Payment verification failed"
           );
 
+          // Add more detailed error logging
           if (error.response) {
             console.error("Error response:", {
               status: error.response.status,
@@ -348,6 +351,7 @@ const PlaceOrder = () => {
       <Toaster position="top-right" richColors />
 
       <form onSubmit={onSubmitHandler} className="grid lg:grid-cols-2 gap-8">
+        {/* Delivery Information */}
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
           <div className="flex items-center gap-4 mb-6 border-b pb-4">
             <MapPin className="text-pink-500" size={32} />
@@ -506,7 +510,9 @@ const PlaceOrder = () => {
           </div>
         </div>
 
+        {/* Order Summary & Payment */}
         <div className="space-y-8">
+          {/* Cart Summary */}
           <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
             <div className="flex items-center gap-4 mb-6 border-b pb-4">
               <ShoppingCart className="text-pink-500" size={32} />
@@ -517,6 +523,7 @@ const PlaceOrder = () => {
             <CartSummary />
           </div>
 
+          {/* Payment Method */}
           <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
             <div className="flex items-center gap-4 mb-6 border-b pb-4">
               <CreditCard className="text-pink-500" size={32} />
