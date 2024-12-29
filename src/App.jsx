@@ -20,6 +20,7 @@ import {
   Policy,
   Product,
   Verify,
+  UserProfile,
 } from "./pages/index";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -82,6 +83,7 @@ const App = () => {
         <Route path="/policy" element={<Policy />} />
         <Route path="/product/:productId" element={<Product />} />
         <Route path="/product" element={<Product />} />
+        <Route path="/profile" element={<UserProfile />} />
 
         {/* Protected Routes */}
         <Route path="/" element={<Home />} />

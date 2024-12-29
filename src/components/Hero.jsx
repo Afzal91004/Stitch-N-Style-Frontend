@@ -5,7 +5,6 @@ import { assets } from "../assets/frontend_assets/assets";
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Sample slide data - replace with your actual data
   const slides = [
     {
       title: "Latest Arrivals",
@@ -18,14 +17,12 @@ const Hero = () => {
       subtitle: "NEW SEASON",
       cta: "DISCOVER MORE",
       image: assets.hero_img2,
-      //   image: "/api/placeholder/800/600",
     },
     {
       title: "Special Offers",
       subtitle: "LIMITED TIME",
       cta: "VIEW DEALS",
       image: assets.hero_img3,
-      //   image: "/api/placeholder/800/600",
     },
   ];
 
@@ -33,7 +30,7 @@ const Hero = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000); // Change slide every 5 seconds
+    }, 5000); 
 
     return () => clearInterval(timer);
   }, []);

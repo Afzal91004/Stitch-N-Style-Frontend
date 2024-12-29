@@ -21,7 +21,6 @@ const Header = () => {
   const { setShowSearch, showSearch, getCartCount, logout } =
     useContext(ShopContext);
 
-  // Handle clicks outside dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
