@@ -18,8 +18,9 @@ const Header = () => {
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
 
-  const { setShowSearch, showSearch, getCartCount, logout } =
-    useContext(ShopContext);
+  const { setShowSearch, showSearch, getCartCount, logout } = useContext(
+    ShopContext
+  );
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -61,32 +62,50 @@ const Header = () => {
 
         {/* Navigation Links */}
         <ul className="hidden sm:flex gap-8 text-sm text-gray-700">
-          {["HOME", "CRAFT YOUR LOOK", "COLLECTION", "DESIGNERS"].map(
-            (item) => (
-              <NavLink
-                key={item}
-                to={`/${
-                  item === "HOME" ? "" : item.toLowerCase().replace(/ /g, "-")
-                }`}
-                className={({ isActive }) => `
-        flex flex-col items-center gap-1 hover:text-black transition-all duration-300
-        ${isActive ? "text-black" : ""}
-      `}
-              >
-                {({ isActive }) => (
-                  <>
-                    <p>{item}</p>
-                    <hr
-                      className={`
-              w-4/5 border-none h-[2px] bg-black transition-transform duration-300
-              ${isActive ? "scale-x-100" : "scale-x-0"}
-            `}
-                    />
-                  </>
-                )}
-              </NavLink>
-            )
-          )}
+          {["HOME", "CRAFT YOUR LOOK", "COLLECTION"].map((item) => (
+            <NavLink
+              key={item}
+              to={`/${
+                item === "HOME" ? "" : item.toLowerCase().replace(/ /g, "-")
+              }`}
+              className={({ isActive }) => `
+      flex flex-col items-center gap-1 hover:text-black transition-all duration-300
+      ${isActive ? "text-black" : ""}
+    `}
+            >
+              {({ isActive }) => (
+                <>
+                  <p>{item}</p>
+                  <hr
+                    className={`
+            w-4/5 border-none h-[2px] bg-black transition-transform duration-300
+            ${isActive ? "scale-x-100" : "scale-x-0"}
+          `}
+                  />
+                </>
+              )}
+            </NavLink>
+          ))}
+
+          <NavLink
+            to="/designer-page"
+            className={({ isActive }) =>
+              `flex flex-col items-center gap-1 hover:text-black transition-all duration-300 ${
+                isActive ? "text-black" : ""
+              }`
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <p>DESIGNERS</p>
+                <hr
+                  className={`w-4/5 border-none h-[2px] bg-black transition-transform duration-300 ${
+                    isActive ? "scale-x-100" : "scale-x-0"
+                  }`}
+                />
+              </>
+            )}
+          </NavLink>
         </ul>
 
         {/* Icons Section */}

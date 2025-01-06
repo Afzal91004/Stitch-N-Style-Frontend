@@ -12,7 +12,7 @@ import {
   Collection,
   Contact,
   CustomCloth,
-  Designers,
+  // Designers,
   Home,
   Login,
   Orders,
@@ -28,6 +28,12 @@ import SearchBar from "./components/SearchBar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ShopContext } from "./context/ShopContext";
+import {
+  DesignerLogin,
+  DesignerSignup,
+  DesignerPage,
+  DesignerDashboard,
+} from "../../Stitch-N-Style-Designers/src/pages/index";
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useContext(ShopContext);
@@ -51,7 +57,7 @@ const App = () => {
       "/custom-cloth",
       "/orders",
       "/place-order",
-      "/",
+      // "/",
     ].includes(location.pathname);
     if (!token && isProtectedRoute) {
       navigate("/login", { state: { from: location } });
@@ -78,12 +84,18 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/collection" element={<Collection />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/designers" element={<Designers />} />
+        {/* <Route path="/designers" element={<Designers />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/policy" element={<Policy />} />
         <Route path="/product/:productId" element={<Product />} />
         <Route path="/product" element={<Product />} />
         <Route path="/profile" element={<UserProfile />} />
+
+        {/* Designer routess */}
+        <Route path="/designer-page" element={<DesignerPage />} />
+        <Route path="/designer/login" element={<DesignerLogin />} />
+        <Route path="/designer/signup" element={<DesignerSignup />} />
+        <Route path="/designer/dashboard" element={<DesignerDashboard />} />
 
         {/* Protected Routes */}
         <Route path="/" element={<Home />} />
