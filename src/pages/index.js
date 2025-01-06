@@ -8,6 +8,5 @@ export { default as Orders } from "./Orders";
 export { default as PlaceOrder } from "./PlaceOrder";
 export { default as Product } from "./Product";
 export { default as CustomCloth } from "./CustomCloth";
-export { default as Designers } from "./Designers";
 export { default as Policy } from "./Policy";
 export { default as Verify } from "./Verify";
