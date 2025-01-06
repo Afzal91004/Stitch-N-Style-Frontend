@@ -22,7 +22,6 @@ const Header = () => {
     ShopContext
   );
 
-  // Handle clicks outside dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -40,8 +39,7 @@ const Header = () => {
 
   const dropdownItems = [
     { icon: <FaUser size={16} />, text: "My Profile", link: "/profile" },
-    { icon: <GiShoppingBag size={16} />, text: "Orders", link: "/orders" },
-    { icon: <FaHistory size={16} />, text: "Order History", link: "/history" },
+    { icon: <FaHistory size={16} />, text: "Order History", link: "/orders" },
     {
       icon: <FiLogOut size={16} />,
       text: "Logout",
