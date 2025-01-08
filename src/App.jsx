@@ -51,7 +51,7 @@ const App = () => {
       "/custom-cloth",
       "/orders",
       "/place-order",
-      "/",
+      // "/",
     ].includes(location.pathname);
     if (!token && isProtectedRoute) {
       navigate("/login", { state: { from: location } });
