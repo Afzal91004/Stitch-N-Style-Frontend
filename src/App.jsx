@@ -33,6 +33,7 @@ import {
   DesignerSignup,
   DesignerPage,
   DesignerDashboard,
+  DesignerProfile,
 } from "../../Stitch-N-Style-Designers/src/pages/index";
 
 const ProtectedRoute = ({ children }) => {
@@ -96,6 +97,10 @@ const App = () => {
         <Route path="/designer/login" element={<DesignerLogin />} />
         <Route path="/designer/signup" element={<DesignerSignup />} />
         <Route path="/designer/dashboard" element={<DesignerDashboard />} />
+        <Route
+          path="/designer-profile/:designerId"
+          element={<DesignerProfile />}
+        />
 
         {/* Protected Routes */}
         <Route path="/" element={<Home />} />
