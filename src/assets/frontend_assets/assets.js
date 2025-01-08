@@ -6,6 +6,7 @@ import hero_img2 from "./hero_img2.jpg";
 import hero_img3 from "./hero_img3.jpg";
 import razorpay_logo from "./razorpay_logo.png";
 import stripe_logo from "./stripe_logo.png";
+import dev_img from "./profile.jpeg"
 
 export const assets = {
   logo,
@@ -16,4 +17,5 @@ export const assets = {
   razorpay_logo,
   stripe_logo,
   kromaApps,
+  dev_img
 };

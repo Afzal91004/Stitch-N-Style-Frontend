@@ -49,16 +49,17 @@ const Footer = () => {
         <div className="text-center sm:text-left">
           <h4 className="font-semibold mb-4">Quick Links</h4>
           <ul className="space-y-2">
-            {["Home", "Collections", "About Us", "Contact"].map((link) => (
-              <li key={link}>
-                <a
-                  href={`/${link.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="hover:text-pink-500 transition-colors"
-                >
-                  {link}
-                </a>
-              </li>
-            ))}
+          {["Home", "Collections", "About Us", "Contact"].map((link) => {
+      const href = link === "About Us" ? "/about" : `/${link.toLowerCase().replace(/\s+/g, "-")}`;
+      return (
+        <li key={link}>
+          <a href={href}
+            className="hover:text-pink-500 transition-colors">
+            {link}
+          </a>
+        </li>
+      );
+          })};
           </ul>
         </div>
 
