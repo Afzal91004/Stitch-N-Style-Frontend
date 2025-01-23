@@ -14,8 +14,17 @@ const SearchBar = () => {
     products: [],
     designers: [],
   });
+  const [suggestions, setSuggestions] = useState([]);
+  const [searchHistory, setSearchHistory] = useState([]);
+
   const inputRef = useRef(null);
   const navigate = useNavigate();
+
+  // search history
+  useEffect(() => {
+    const history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+    setSearchHistory(history);
+  }, []);
 
   useEffect(() => {
     if (showSearch) {
@@ -36,7 +45,7 @@ const SearchBar = () => {
         document.removeEventListener("keydown", handleEscapeKey);
       };
     }
-  }, [showSearch, setShowSearch]);
+  }, [showSearch]);
 
   const handleSearch = async () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -50,6 +59,7 @@ const SearchBar = () => {
           products: response.data.products,
           designers: response.data.designers,
         });
+        updateSearchHistory(search);
       } else {
         setSearchResults({ products: [], designers: [] });
       }
@@ -64,21 +74,67 @@ const SearchBar = () => {
     }
   };
 
-  const handleClearSearch = () => {
-    setSearch("");
-    setSearchResults({ products: [], designers: [] });
-    inputRef.current?.focus();
-  };
-
   const handleCloseSearch = () => {
     setShowSearch(false);
     setSearch("");
     setSearchResults({ products: [], designers: [] });
-
+    setSuggestions([]);
     if (window.location.pathname === "/search-results") {
       navigate("/collection");
     }
   };
+
+  const handleSuggestions = async () => {
+    if (search.trim().length < 3) return;
+
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+      const response = await axios.post(
+        `${backendUrl}/api/search/suggestions`,
+        {
+          query: search,
+        }
+      );
+
+      if (response.data.success) {
+        setSearchResults({
+          products: response.data.products,
+          designers: response.data.designers,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+    }
+  };
+
+  const updateSearchHistory = (query) => {
+    if (!query.trim()) return;
+
+    const updatedHistory = [
+      query,
+      ...searchHistory.filter((item) => item !== query),
+    ].slice(0, 10);
+    setSearchHistory(updatedHistory);
+    localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+  };
+
+  const handleSearchFromHistory = (query) => {
+    setSearch(query);
+    handleSearch();
+  };
+
+  const handleClearHistory = () => {
+    setSearchHistory([]);
+    localStorage.removeItem("searchHistory");
+  };
+
+  useEffect(() => {
+    if (search.length >= 3) {
+      handleSuggestions(search);
+    } else {
+      setSuggestions([]);
+    }
+  }, [search]);
 
   if (!showSearch) return null;
 
@@ -111,18 +167,6 @@ const SearchBar = () => {
               onBlur={() => setIsFocused(false)}
               onKeyDown={handleKeyDown}
             />
-            {search && (
-              <button
-                onClick={handleClearSearch}
-                className="ml-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors group"
-                aria-label="Clear search"
-              >
-                <RxCross2
-                  size={20}
-                  className="text-gray-500 group-hover:text-gray-700 transition-colors"
-                />
-              </button>
-            )}
             <button
               onClick={handleSearch}
               className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors flex items-center gap-2"
@@ -141,70 +185,113 @@ const SearchBar = () => {
             <RxCross2 size={24} />
           </button>
 
+          {/* Search History Section */}
+          {searchHistory.length > 0 && (
+            <div className="mt-4 bg-white border rounded-lg shadow-md animate-fade-in p-4">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-lg font-semibold">Recent Searches</h3>
+                <button
+                  onClick={handleClearHistory}
+                  className="text-red-500 text-sm hover:underline"
+                >
+                  Clear All
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {searchHistory.map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSearchFromHistory(item)}
+                    className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full hover:bg-gray-200"
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Suggestions Section */}
+          {suggestions.length > 0 && search.length >= 3 && (
+            <div className="mt-4 bg-white border rounded-lg shadow-md max-h-80 overflow-y-auto animate-fade-in">
+              {suggestions.map((suggestion) => (
+                <div
+                  key={suggestion}
+                  className="flex items-center p-3 hover:bg-gray-100 transition-colors group cursor-pointer"
+                  onClick={() => handleSearchFromSuggestion(suggestion)}
+                >
+                  <span className="text-gray-800">{suggestion}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Results Section */}
           <div className="mt-4 flex gap-6">
             {/* Products Section */}
-            {searchResults.products.length > 0 && (
-              <div className="flex-1 pr-4">
-                <h3 className="text-lg font-semibold">Products</h3>
-                <div className="bg-white border rounded-lg shadow-md max-h-80 overflow-y-auto animate-fade-in">
-                  {searchResults.products.map((product) => (
-                    <Link
-                      key={product._id}
-                      to={`/product/${product._id}`}
-                      onClick={() => setShowSearch(false)}
-                      className="flex items-center p-3 hover:bg-gray-100 transition-colors group"
-                    >
-                      <img
-                        src={product.image[0]}
-                        alt={product.name}
-                        className="w-12 h-12 object-cover rounded mr-4"
-                      />
-                      <div className="flex-grow">
-                        <span className="text-gray-800 group-hover:text-blue-600 block">
-                          {product.name}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                          {currency}
-                          {product.price.toLocaleString()}
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
+            {Array.isArray(searchResults.products) &&
+              searchResults.products.length > 0 && (
+                <div className="flex-1 pr-4">
+                  <h3 className="text-lg font-semibold">Products</h3>
+                  <div className="bg-white border rounded-lg shadow-md max-h-80 overflow-y-auto animate-fade-in">
+                    {searchResults.products.map((product) => (
+                      <Link
+                        key={product._id}
+                        to={`/product/${product._id}`}
+                        onClick={() => setShowSearch(false)}
+                        className="flex items-center p-3 hover:bg-gray-100 transition-colors group"
+                      >
+                        <img
+                          src={product.image[0]}
+                          alt={product.name}
+                          className="w-12 h-12 object-cover rounded mr-4"
+                        />
+                        <div className="flex-grow">
+                          <span className="text-gray-800 group-hover:text-blue-600 block">
+                            {product.name}
+                          </span>
+                          <span className="text-sm text-gray-500">
+                            {currency}
+                            {product.price.toLocaleString()}
+                          </span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Designers Section */}
-            {searchResults.designers.length > 0 && (
-              <div className="w-80">
-                <h3 className="text-lg font-semibold">Designers</h3>
-                <div className="bg-white border rounded-lg shadow-md max-h-80 overflow-y-auto animate-fade-in">
-                  {searchResults.designers.map((designer) => (
-                    <Link
-                      key={designer._id}
-                      to={`/designer-profile/${designer._id}`}
-                      onClick={() => setShowSearch(false)}
-                      className="flex items-center p-3 hover:bg-gray-100 transition-colors group"
-                    >
-                      <img
-                        src={designer.profileImage || "/default-avatar.png"}
-                        alt={designer.name}
-                        className="w-12 h-12 object-cover rounded-full mr-4"
-                      />
-                      <div className="flex-grow">
-                        <span className="text-gray-800 group-hover:text-blue-600 block">
-                          {designer.name}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                          {designer.bio || "Designer"}
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
+            {Array.isArray(searchResults.designers) &&
+              searchResults.designers.length > 0 && (
+                <div className="w-80">
+                  <h3 className="text-lg font-semibold">Designers</h3>
+                  <div className="bg-white border rounded-lg shadow-md max-h-80 overflow-y-auto animate-fade-in">
+                    {searchResults.designers.map((designer) => (
+                      <Link
+                        key={designer._id}
+                        to={`/designer-profile/${designer._id}`}
+                        onClick={() => setShowSearch(false)}
+                        className="flex items-center p-3 hover:bg-gray-100 transition-colors group"
+                      >
+                        <img
+                          src={designer.profileImage || "/default-avatar.png"}
+                          alt={designer.name}
+                          className="w-12 h-12 object-cover rounded-full mr-4"
+                        />
+                        <div className="flex-grow">
+                          <span className="text-gray-800 group-hover:text-blue-600 block">
+                            {designer.name}
+                          </span>
+                          <span className="text-sm text-gray-500">
+                            {designer.bio || "Designer"}
+                          </span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
 
           {/* No Results Found Message */}

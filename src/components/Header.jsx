@@ -15,6 +15,8 @@ import { ShopContext } from "../context/ShopContext";
 const Header = () => {
   const [visible, setVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [isDesignerLoggedIn, setIsDesignerLoggedIn] = useState(false);
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
 
@@ -37,15 +39,56 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userType = localStorage.getItem("userType"); // 'customer' or 'designer'
+
+    console.log("Token: ", token);
+    console.log("User Type: ", userType);
+
+    if (token && userType === "user") {
+      setIsUserLoggedIn(true);
+      setIsDesignerLoggedIn(false); // Reset login state of designer
+    } else if (token && userType === "designer") {
+      setIsDesignerLoggedIn(true);
+      setIsUserLoggedIn(false); // Reset login state of customer
+    }
+  }, []);
+
   const dropdownItems = [
-    { icon: <FaUser size={16} />, text: "My Profile", link: "/profile" },
-    { icon: <FaHistory size={16} />, text: "Order History", link: "/orders" },
-    {
-      icon: <FiLogOut size={16} />,
-      text: "Logout",
-      onClick: logout,
-      isLogout: true,
-    },
+    ...(isUserLoggedIn || isDesignerLoggedIn
+      ? [
+          { icon: <FaUser size={16} />, text: "My Profile", link: "/profile" },
+          {
+            icon: <FaHistory size={16} />,
+            text: "Order History",
+            link: "/orders",
+          },
+          {
+            icon: <FiLogOut size={16} />,
+            text: "Logout",
+            onClick: () => {
+              logout();
+              setIsUserLoggedIn(false);
+              setIsDesignerLoggedIn(false);
+              localStorage.removeItem("token");
+              localStorage.removeItem("userType");
+            },
+            isLogout: true,
+          },
+        ]
+      : [
+          {
+            icon: <FaUser size={16} />,
+            text: "Designer Login",
+            link: "/designer/login",
+          },
+          {
+            icon: <FaUser size={16} />,
+            text: "Customer Login",
+            link: "/login",
+          },
+        ]),
   ];
 
   return (

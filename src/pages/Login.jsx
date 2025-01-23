@@ -35,6 +35,7 @@ const Login = () => {
 
         if (response.data.token) {
           localStorage.setItem("token", response.data.token);
+          localStorage.setItem("userType", response.data.userType);
           setToken(response.data.token);
           toast.success("Login successful!", {
             autoClose: 5000,
