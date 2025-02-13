@@ -18,9 +18,8 @@ const Header = () => {
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
 
-  const { setShowSearch, showSearch, getCartCount, logout } = useContext(
-    ShopContext
-  );
+  const { setShowSearch, showSearch, getCartCount, logout } =
+    useContext(ShopContext);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

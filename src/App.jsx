@@ -110,7 +110,7 @@ const App = () => {
         />
 
         <Route
-          path="/custom-cloth"
+          path="/craft-your-look"
           element={
             <ProtectedRoute>
               <CustomCloth />

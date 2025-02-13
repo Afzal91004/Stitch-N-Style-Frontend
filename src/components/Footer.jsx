@@ -30,9 +30,9 @@ const Footer = () => {
         <div className="text-center sm:text-left">
           <div className="flex justify-center sm:justify-start items-center mb-4">
             <img
-              src={assets.snsdark}
+              src={assets.sns}
               alt="Stitch & Style Logo"
-              className="h-32 mr-4"
+              className="h-8 mr-4"
             />
             <img src={assets.kromaApps} alt="KromaApps Logo" className="h-8" />
           </div>
