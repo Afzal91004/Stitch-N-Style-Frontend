@@ -11,7 +11,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import RelatedProducts from "../components/RelatedProducts";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Product Loading Placeholder Component
@@ -130,6 +130,11 @@ const Product = () => {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const rating = 4.5;
 
+  const truncateDescription = (text, maxLength = 150) => {
+    if (!text || text.length <= maxLength) return text;
+    return showFullDescription ? text : `${text.slice(0, maxLength)}...`;
+  };
+
   useEffect(() => {
     setLoading(true);
     if (products && products.length > 0) {
@@ -151,23 +156,16 @@ const Product = () => {
 
   const handleAddToCart = () => {
     if (!size && productData.sizes && productData.sizes.length > 0) {
-      toast.error("Please select a size", {
-        toastId: "size-error", // Prevent duplicate error toasts
-      });
+      toast.error("Please select a size");
       return;
     }
+
     addToCart(productData._id, size);
     toast.success("Added to cart!");
   };
 
-  const truncateDescription = (text, maxLength = 150) => {
-    if (!text || text.length <= maxLength) return text;
-    return showFullDescription ? text : `${text.slice(0, maxLength)}...`;
-  };
-
   return (
     <div className="container mx-auto px-2 sm:px-4 py-6 sm:py-10 max-w-7xl bg-gradient-to-br from-gray-50 to-pink-50">
-      <ToastContainer position="top-right" autoClose={1000} />
       <nav className="flex items-center text-xs text-gray-600 mb-4 sm:mb-8 pl-2 overflow-x-auto">
         <a
           href="/shop"
