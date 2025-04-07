@@ -14,6 +14,111 @@ import RelatedProducts from "../components/RelatedProducts";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Product Loading Placeholder Component
+const ProductLoadingPlaceholder = () => {
+  return (
+    <div className="container mx-auto px-4 py-10 max-w-7xl bg-gradient-to-br from-gray-50 to-pink-50">
+      <div className="animate-pulse">
+        {/* Breadcrumb placeholder */}
+        <div className="flex items-center mb-8 pl-2">
+          <div className="h-3 bg-gray-200 rounded w-16"></div>
+          <div className="mx-2 h-3 w-3 bg-gray-200 rounded"></div>
+          <div className="h-3 bg-gray-200 rounded w-24"></div>
+          <div className="mx-2 h-3 w-3 bg-gray-200 rounded"></div>
+          <div className="h-3 bg-gray-200 rounded w-32"></div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-10 lg:gap-16 bg-gray-50 p-6 rounded-2xl shadow-sm">
+          {/* Image placeholder */}
+          <div className="flex flex-col-reverse md:flex-row gap-6">
+            <div className="md:w-24 flex md:flex-col overflow-x-auto md:overflow-y-auto space-x-4 md:space-x-0 md:space-y-4">
+              {[...Array(4)].map((_, index) => (
+                <div
+                  key={index}
+                  className="w-20 h-20 bg-gray-200 rounded-lg"
+                ></div>
+              ))}
+            </div>
+            <div className="flex-grow">
+              <div className="w-full max-w-[500px] h-[400px] bg-gray-200 rounded-xl mx-auto"></div>
+            </div>
+          </div>
+
+          {/* Details placeholder */}
+          <div className="space-y-6">
+            <div>
+              <div className="h-8 bg-gray-200 rounded w-3/4 mb-3"></div>
+              <div className="flex items-center mb-4">
+                <div className="flex space-x-1">
+                  {[...Array(5)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="w-5 h-5 bg-gray-200 rounded-full"
+                    ></div>
+                  ))}
+                </div>
+                <div className="h-4 bg-gray-200 rounded w-24 ml-2"></div>
+              </div>
+            </div>
+
+            <div className="h-10 bg-gray-200 rounded w-32 mb-4"></div>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+            </div>
+
+            <div className="mb-6">
+              <div className="h-6 bg-gray-200 rounded w-32 mb-3"></div>
+              <div className="flex gap-3">
+                {[...Array(4)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-12 h-10 bg-gray-200 rounded-md"
+                  ></div>
+                ))}
+              </div>
+            </div>
+
+            <div className="w-full h-12 bg-gray-200 rounded-lg"></div>
+
+            <div className="grid grid-cols-3 gap-4 mt-6 p-4 bg-gray-50 rounded-lg">
+              {[...Array(3)].map((_, index) => (
+                <div key={index} className="flex flex-col items-center">
+                  <div className="w-6 h-6 bg-gray-200 rounded-full mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-16"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Description placeholder */}
+        <div className="mt-16">
+          <div className="border-b mb-6">
+            <div className="pb-2 h-6 bg-gray-200 rounded w-24 inline-block"></div>
+            <div className="pb-2 ml-6 h-6 bg-gray-200 rounded w-32 inline-block"></div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="h-4 bg-gray-200 rounded w-full"></div>
+            <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+            <div className="pl-5 space-y-2">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex items-center">
+                  <div className="w-2 h-2 bg-gray-200 rounded-full mr-3"></div>
+                  <div className="h-4 bg-gray-200 rounded w-64"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Product = () => {
   const { productId } = useParams();
   const { products, currency, addToCart } = useContext(ShopContext);
@@ -21,32 +126,42 @@ const Product = () => {
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
   const [favorite, setFavorite] = useState(false);
+  const [loading, setLoading] = useState(true);
   const rating = 4.5;
 
   useEffect(() => {
-    const product = products.find((item) => item._id === productId);
-    if (product) {
-      setProductData(product);
-      setImage(product.image[0]);
+    setLoading(true);
+    if (products && products.length > 0) {
+      const product = products.find((item) => item._id === productId);
+      if (product) {
+        setProductData(product);
+        setImage(product.image[0]);
+        if (product.sizes && product.sizes.length > 0) {
+          setSize(product.sizes[0]);
+        }
+        setLoading(false);
+      }
     }
   }, [productId, products]);
 
-  if (!productData) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4  border-r-4 border-gray-300"></div>
-      </div>
-    );
+  if (loading || !productData) {
+    return <ProductLoadingPlaceholder />;
   }
 
   const handleAddToCart = () => {
+    if (!size && productData.sizes && productData.sizes.length > 0) {
+      toast.error("Please select a size");
+      return;
+    }
     console.log("Button clicked");
     console.log("Current size:", size);
     addToCart(productData._id, size);
+    toast.success("Added to cart!");
   };
 
   return (
-    <div className="container mx-auto px-4 py-10 max-w-7xl bg-white">
+    <div className="container mx-auto px-4 py-10 max-w-7xl bg-gradient-to-br from-gray-50 to-pink-50">
+      <ToastContainer position="top-right" autoClose={2000} />
       <nav className="flex items-center text-xs text-gray-600 mb-8 pl-2">
         <a href="/shop" className="hover:text-gray-600 transition-colors">
           Shop
@@ -141,41 +256,42 @@ const Product = () => {
             {productData.description}
           </p>
 
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-3">Select Size</h3>
-            <div className="flex gap-3">
-              {productData.sizes.map((item) => (
-                <button
-                  key={item}
-                  onClick={() => setSize(item)}
-                  className={`
-                    px-4 py-2 rounded-md border transition-all duration-200
-                    ${
-                      size === item
-                        ? "bg-gray-900 text-white border-gray-600 shadow-md"
-                        : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
-                    }
-                  `}
-                >
-                  {item}
-                </button>
-              ))}
+          {productData.sizes && productData.sizes.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-3">Select Size</h3>
+              <div className="flex gap-3">
+                {productData.sizes.map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => setSize(item)}
+                    className={`
+                      px-4 py-2 rounded-md border transition-all duration-200
+                      ${
+                        size === item
+                          ? "bg-gray-900 text-white border-gray-600 shadow-md"
+                          : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+                      }
+                    `}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <button
             className="
               w-full flex items-center justify-center 
               bg-gray-600 text-white 
               py-3 rounded-lg 
-              hover:bg-gray-900 
-              transition-colors
+              hover:bg-gray-700 
+              transition-all duration-300
               disabled:opacity-50
-              shadow-md hover:shadow-lg
+              shadow-md hover:shadow-lg transform hover:scale-105
               group
             "
             onClick={handleAddToCart}
-            // disabled={!size} //ise uncomment karne se toast message work nhi kar rha
           >
             <ShoppingCart className="mr-2 group-hover:animate-bounce" />
             Add to Cart

@@ -12,7 +12,6 @@ import {
   Collection,
   Contact,
   CustomCloth,
-  // Designers,
   Home,
   Login,
   Orders,
@@ -21,6 +20,7 @@ import {
   Product,
   Verify,
   UserProfile,
+  CustomOrderHistory,
 } from "./pages/index";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -90,6 +90,8 @@ const App = () => {
         <Route path="/product/:productId" element={<Product />} />
         <Route path="/product" element={<Product />} />
         <Route path="/profile" element={<UserProfile />} />
+
+        <Route path="/custom-order-history" element={<CustomOrderHistory />} />
 
         {/* Designer routess */}
         <Route path="/designer-page" element={<DesignerPage />} />

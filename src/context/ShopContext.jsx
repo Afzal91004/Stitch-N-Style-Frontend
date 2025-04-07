@@ -9,7 +9,10 @@ export const ShopContext = createContext();
 const ShopContextProvider = ({ children }) => {
   const currency = "₹";
   const deliveryFee = 49;
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  // Make sure this is correctly set in your .env file
+  const backendUrl =
+    import.meta.env.VITE_BACKEND_URL ||
+    "https://stitch-n-style-backend.vercel.app";
 
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -21,21 +24,51 @@ const ShopContextProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
+  // Create an axios instance with proper configuration
+  const api = useMemo(() => {
+    const instance = axios.create({
+      baseURL: backendUrl,
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    // Set token if available
+    if (token) {
+      instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    }
+
+    return instance;
+  }, [backendUrl, token]);
+
   useEffect(() => {
-    const interceptor = axios.interceptors.request.use(
+    const interceptor = api.interceptors.request.use(
       (config) => {
-        const token = localStorage.getItem("token");
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
+        const currentToken = localStorage.getItem("token");
+        if (currentToken) {
+          config.headers.Authorization = `Bearer ${currentToken}`;
         }
         return config;
       },
       (error) => Promise.reject(error)
     );
 
-    const responseInterceptor = axios.interceptors.response.use(
+    const responseInterceptor = api.interceptors.response.use(
       (response) => response,
       (error) => {
+        console.error("API Error:", error);
+
+        // Detailed error logging for easier debugging
+        if (error.response) {
+          console.error("Response status:", error.response.status);
+          console.error("Response data:", error.response.data);
+        } else if (error.request) {
+          console.error("No response received:", error.request);
+        } else {
+          console.error("Error setting up request:", error.message);
+        }
+
         if (error.response?.status === 401) {
           handleLogout();
           toast.error("Session expired. Please login again.");
@@ -45,30 +78,34 @@ const ShopContextProvider = ({ children }) => {
     );
 
     return () => {
-      axios.interceptors.request.eject(interceptor);
-      axios.interceptors.response.eject(responseInterceptor);
+      api.interceptors.request.eject(interceptor);
+      api.interceptors.response.eject(responseInterceptor);
     };
-  }, []);
+  }, [api]);
 
   useEffect(() => {
     if (token) {
       syncCart();
       localStorage.setItem("token", token);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } else {
       localStorage.removeItem("token");
-      delete axios.defaults.headers.common["Authorization"];
     }
   }, [token]);
 
   const syncCart = async () => {
+    if (!token) return;
+
     try {
-      const response = await axios.get(`${backendUrl}/api/cart/get`);
+      setCartLoading(true);
+      const response = await api.get("/api/cart/get");
       if (response.data.success) {
         setCartItems(response.data.cartData);
       }
     } catch (error) {
       console.error("Cart sync error:", error);
+      // Don't show toast here as it might be annoying on initial load
+    } finally {
+      setCartLoading(false);
     }
   };
 
@@ -86,7 +123,7 @@ const ShopContextProvider = ({ children }) => {
 
     setCartLoading(true);
     try {
-      const response = await axios.post(`${backendUrl}/api/cart/add`, {
+      const response = await api.post("/api/cart/add", {
         itemId,
         size,
       });
@@ -109,7 +146,7 @@ const ShopContextProvider = ({ children }) => {
 
     setCartLoading(true);
     try {
-      const response = await axios.post(`${backendUrl}/api/cart/update`, {
+      const response = await api.post("/api/cart/update", {
         itemId,
         size,
         quantity,
@@ -185,19 +222,20 @@ const ShopContextProvider = ({ children }) => {
 
   useEffect(() => {
     getProductsData();
-  }, [backendUrl]);
+  }, []);
 
   const getProductsData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${backendUrl}/api/product/list`);
+      const response = await api.get("/api/product/list");
       if (response.data.products) {
         setProducts(response.data.products);
       } else {
         throw new Error(response.data.message || "Failed to fetch products");
       }
     } catch (error) {
-      toast.error(error.message || "Error loading products");
+      console.error("Product fetch error:", error);
+      toast.error("Error loading products. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -208,7 +246,7 @@ const ShopContextProvider = ({ children }) => {
 
     setCartLoading(true);
     try {
-      const response = await axios.post(`${backendUrl}/api/cart/clear`);
+      const response = await api.post("/api/cart/clear");
       if (response.data.success) {
         setCartItems({});
       } else {

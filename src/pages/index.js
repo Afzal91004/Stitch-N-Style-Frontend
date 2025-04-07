@@ -11,3 +11,4 @@ export { default as CustomCloth } from "./CustomCloth";
 export { default as Policy } from "./Policy";
 export { default as Verify } from "./Verify";
 export { default as UserProfile } from "./UserProfile";
+export { default as CustomOrderHistory } from "./CustomOrderHistory";

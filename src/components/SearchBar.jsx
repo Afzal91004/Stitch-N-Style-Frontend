@@ -84,77 +84,34 @@ const SearchBar = () => {
   if (!showSearch) return null;
 
   return (
-    <div
-      className="
-        fixed 
-        inset-0 
-        z-50 
-        bg-white/95 
-        backdrop-blur-sm 
-        overflow-hidden
-      "
-    >
-      <div
-        className="
-          container 
-          mx-auto 
-          px-4 
-          py-4 
-          h-full 
-          flex 
-          items-start 
-          justify-center 
-          pt-20 
-          md:pt-32
-        "
-      >
-        <div
-          className="
-            w-full 
-            max-w-xl 
-            relative 
-            animate-fade-in
-          "
-        >
+    <div className="fixed inset-0 z-50 bg-gradient-to-br from-white/95 to-pink-50/95 backdrop-blur-sm overflow-hidden">
+      <div className="container mx-auto px-4 py-4 h-full flex items-start justify-center pt-20 md:pt-32">
+        <div className="w-full max-w-xl relative animate-fade-in scale-up-center">
           <div
             className={`
-              flex 
-              items-center 
-              border-2 
-              rounded-full 
-              px-4 
-              py-3 
-              bg-white 
-              shadow-lg 
-              transition-all 
-              duration-300
+              flex items-center border-2 rounded-xl px-4 py-3 
+              bg-white shadow-lg transition-all duration-300
               ${
                 isFocused
-                  ? "border-blue-500 ring-2 ring-blue-100"
-                  : "border-gray-300 hover:border-gray-400"
+                  ? "border-pink-500 ring-2 ring-pink-100 shadow-pink-100"
+                  : "border-gray-200 hover:border-pink-300"
               }
             `}
           >
             <FaSearch
               size={20}
               className={`
-                mr-3 
-                transition-colors 
-                ${isFocused ? "text-blue-500" : "text-gray-400"}
+                mr-3 transition-colors
+                ${isFocused ? "text-pink-500" : "text-gray-400"}
               `}
             />
 
             <input
               ref={inputRef}
               className="
-                flex-1 
-                bg-transparent 
-                outline-none 
-                text-base 
-                md:text-lg
-                text-gray-800 
-                placeholder-gray-500
-                w-full
+                flex-1 bg-transparent outline-none 
+                text-base md:text-lg text-gray-800 
+                placeholder-gray-500 w-full
               "
               type="text"
               placeholder="Search products, categories, and more"
@@ -168,23 +125,12 @@ const SearchBar = () => {
             {search && (
               <button
                 onClick={handleClearSearch}
-                className="
-                  ml-2 
-                  p-1.5 
-                  rounded-full 
-                  hover:bg-gray-100 
-                  transition-colors 
-                  group
-                "
+                className="ml-2 p-1.5 rounded-full hover:bg-pink-50 transition-colors group"
                 aria-label="Clear search"
               >
                 <RxCross2
                   size={20}
-                  className="
-                    text-gray-500 
-                    group-hover:text-gray-700 
-                    transition-colors
-                  "
+                  className="text-gray-500 group-hover:text-pink-500 transition-colors"
                 />
               </button>
             )}
@@ -192,20 +138,13 @@ const SearchBar = () => {
             <button
               onClick={handleSearch}
               className="
-                ml-2 
-                bg-blue-500 
-                text-white 
-                px-4 
-                py-2 
-                rounded-full 
-                hover:bg-blue-600 
-                transition-colors
-                flex 
-                items-center 
-                gap-2
+                ml-2 bg-gradient-to-r from-pink-500 to-pink-600
+                text-white px-4 py-2 rounded-lg 
+                hover:shadow-md transition-all duration-300
+                flex items-center gap-2
               "
             >
-              <FaSearch />
+              <FaSearch size={14} />
               Search
             </button>
           </div>
@@ -213,79 +152,60 @@ const SearchBar = () => {
           <button
             onClick={handleCloseSearch}
             className="
-              absolute 
-              -top-12 
-              right-0 
-              p-2 
-              rounded-full 
-              hover:bg-gray-100 
-              group
-              text-gray-600 
-              hover:text-gray-900
+              absolute -top-12 right-0 p-2 
+              rounded-full hover:bg-gray-100 
+              text-gray-600 hover:text-pink-500
+              transition-colors group
             "
             aria-label="Close search"
           >
             <RxCross2 size={24} />
           </button>
 
+          {/* Search suggestions */}
           {!search && (
-            <div
-              className="
-                mt-6 
-                text-center 
-                text-gray-500 
-                text-sm 
-                md:text-base 
-                animate-fade-in
-              "
-            >
-              Try searching for "Shirt", "Jacket", or "Accessories"
+            <div className="mt-6 p-4 bg-white/50 rounded-xl border border-pink-100 backdrop-blur-sm">
+              <p className="text-gray-600 text-center mb-2">
+                Suggested Searches
+              </p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {["Shirts", "Dresses", "Jackets", "Accessories"].map((term) => (
+                  <button
+                    key={term}
+                    onClick={() => setSearch(term)}
+                    className="px-3 py-1 rounded-full bg-white border border-pink-200 text-sm text-gray-700 hover:bg-pink-50 hover:border-pink-300 transition-all"
+                  >
+                    {term}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
+          {/* Search results */}
           {searchResults.length > 0 && (
-            <div
-              className="
-                mt-4 
-                bg-white 
-                border 
-                rounded-lg 
-                shadow-md 
-                max-h-80 
-                overflow-y-auto 
-                animate-fade-in
-              "
-            >
+            <div className="mt-4 bg-white/80 rounded-xl border border-pink-100 shadow-lg backdrop-blur-sm">
               {searchResults.map((product) => (
                 <Link
                   key={product._id}
                   to={`/product/${product._id}`}
                   onClick={() => setShowSearch(false)}
                   className="
-                    flex 
-                    items-center 
-                    p-3 
-                    hover:bg-gray-100 
-                    transition-colors 
-                    group
+                    flex items-center p-4 hover:bg-gray-50 
+                    transition-colors group border-b 
+                    border-gray-100 last:border-none
                   "
                 >
                   <img
                     src={product.image[0]}
                     alt={product.name}
-                    className="
-                      w-12 
-                      h-12 
-                      object-cover 
-                      rounded 
-                      mr-4
-                    "
+                    className="w-16 h-16 object-cover rounded-lg"
                   />
-                  <div className="flex-grow">
-                    <span className="text-gray-800 group-hover:text-blue-600 block">
+                  <div className="ml-4 flex-grow">
+                    <span className="text-gray-800 group-hover:text-pink-600 transition-colors block font-medium">
                       {product.name}
                     </span>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-pink-500 font-semibold">
                       {currency}
                       {product.price.toLocaleString()}
                     </span>
@@ -295,21 +215,12 @@ const SearchBar = () => {
             </div>
           )}
 
+          {/* No results message */}
           {search && searchResults.length === 0 && (
-            <div
-              className="
-                mt-4 
-                bg-white 
-                border 
-                rounded-lg 
-                shadow-md 
-                p-4 
-                text-center 
-                text-gray-500
-                animate-fade-in
-              "
-            >
-              No products found matching "{search}"
+            <div className="mt-4 bg-white/80 rounded-xl border border-pink-100 shadow-lg p-6 text-center backdrop-blur-sm">
+              <p className="text-gray-600">
+                No products found matching "{search}"
+              </p>
             </div>
           )}
         </div>

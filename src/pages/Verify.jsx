@@ -71,17 +71,15 @@ const Verify = () => {
   const content = getContent();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-300 to-pink-100 p-4">
       <div
-        className={`relative w-full max-w-md mx-auto p-16 rounded-lg transition-all duration-1000 ${
+        className={`relative w-full max-w-md bg-white shadow-2xl rounded-2xl overflow-hidden transition-all duration-1000 ${
           animate ? "scale-100 opacity-100" : "scale-95 opacity-0"
         }`}
       >
         <div
           className={`absolute inset-0 bg-gradient-to-r ${
-            success
-              ? "from-pink-500 to-purple-500"
-              : "from-red-500 to-orange-500"
+            success ? "from-gray-600 to-gray-700" : "from-red-500 to-orange-500"
           } rounded-lg transition-all duration-1000 ${
             animate ? "opacity-100" : "opacity-0"
           }`}
@@ -115,11 +113,7 @@ const Verify = () => {
           <button
             onClick={content.buttonAction}
             className={`flex items-center justify-center gap-2 px-8 py-3 
-              bg-gradient-to-r ${
-                success
-                  ? "from-pink-500 to-pink-500"
-                  : "from-red-500 to-orange-500"
-              }
+              bg-gray-600 hover:bg-gray-700
               text-white rounded-lg font-medium w-full max-w-xs mx-auto
               transform transition-all duration-300 hover:scale-105 hover:shadow-lg
               ${

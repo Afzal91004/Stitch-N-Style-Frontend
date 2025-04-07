@@ -49,71 +49,47 @@ const Header = () => {
 
   return (
     <div className="relative">
-      <div className="flex items-center justify-between px-4 sm:px-8 py-3 bg-white shadow-md font-medium sticky top-0 z-50">
+      <div className="flex items-center justify-between px-4 sm:px-8 py-4 bg-white shadow-md font-medium sticky top-0 z-50">
         {/* Logo */}
-        <Link to="/">
-          <img
-            src={assets.logo}
-            className="w-36 cursor-pointer hover:opacity-90 transition-opacity"
-            alt="Stitch & Style"
-          />
+        <Link to="/" className="transition-opacity hover:opacity-90">
+          <img src={assets.logo} className="w-36" alt="Stitch & Style" />
         </Link>
 
         {/* Navigation Links */}
-        <ul className="hidden sm:flex gap-8 text-sm text-gray-700">
-          {["HOME", "CRAFT YOUR LOOK", "COLLECTION"].map((item) => (
-            <NavLink
-              key={item}
-              to={`/${
-                item === "HOME" ? "" : item.toLowerCase().replace(/ /g, "-")
-              }`}
-              className={({ isActive }) => `
-      flex flex-col items-center gap-1 hover:text-black transition-all duration-300
-      ${isActive ? "text-black" : ""}
-    `}
-            >
-              {({ isActive }) => (
-                <>
-                  <p>{item}</p>
-                  <hr
-                    className={`
-            w-4/5 border-none h-[2px] bg-black transition-transform duration-300
-            ${isActive ? "scale-x-100" : "scale-x-0"}
-          `}
-                  />
-                </>
-              )}
-            </NavLink>
-          ))}
-
-          <NavLink
-            to="/designer-page"
-            className={({ isActive }) =>
-              `flex flex-col items-center gap-1 hover:text-black transition-all duration-300 ${
-                isActive ? "text-black" : ""
-              }`
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <p>DESIGNERS</p>
-                <hr
-                  className={`w-4/5 border-none h-[2px] bg-black transition-transform duration-300 ${
-                    isActive ? "scale-x-100" : "scale-x-0"
-                  }`}
-                />
-              </>
-            )}
-          </NavLink>
+        <ul className="hidden sm:flex gap-8 text-sm">
+          {["HOME", "CRAFT YOUR LOOK", "COLLECTION", "DESIGNERS"].map(
+            (item) => (
+              <NavLink
+                key={item}
+                to={`/${
+                  item === "HOME" ? "" : item.toLowerCase().replace(/ /g, "-")
+                }`}
+                className={({ isActive }) => `
+                flex flex-col items-center gap-1 text-gray-600 hover:text-pink-600 transition-all duration-300
+                ${isActive ? "text-pink-600" : ""}
+              `}
+              >
+                {({ isActive }) => (
+                  <>
+                    <p className="font-medium">{item}</p>
+                    <div
+                      className={`h-0.5 w-2/3 bg-pink-600 transition-transform duration-300
+                    ${isActive ? "scale-x-100" : "scale-x-0"}`}
+                    />
+                  </>
+                )}
+              </NavLink>
+            )
+          )}
         </ul>
 
         {/* Icons Section */}
-        <div className="flex items-center gap-0">
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+        <div className="flex items-center gap-2">
+          <button className="p-2 hover:bg-pink-50 rounded-full transition-colors">
             <FaSearch
               onClick={() => setShowSearch(!showSearch)}
               size={20}
-              className="text-gray-600 hover:text-black transition-colors"
+              className="text-gray-600 hover:text-pink-600 transition-colors"
             />
           </button>
 
@@ -121,13 +97,13 @@ const Header = () => {
           <div className="relative" ref={dropdownRef}>
             <button
               ref={buttonRef}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2 hover:bg-pink-50 rounded-full transition-colors"
               onClick={() => setDropdownVisible(!dropdownVisible)}
               onMouseEnter={() => setDropdownVisible(true)}
             >
               <FaRegUserCircle
                 size={20}
-                className="text-gray-600 hover:text-black transition-colors"
+                className="text-gray-600 hover:text-pink-600 transition-colors"
               />
             </button>
             <div
@@ -184,20 +160,20 @@ const Header = () => {
           {/* Cart Icon */}
           <Link
             to="/cart"
-            className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="relative p-2 hover:bg-pink-50 rounded-full transition-colors"
           >
             <FaShoppingCart
               size={20}
-              className="text-gray-600 hover:text-black transition-colors"
+              className="text-gray-600 hover:text-pink-600 transition-colors"
             />
-            <span className="absolute right-0 top-0 w-5 h-5 flex items-center justify-center bg-black text-white text-xs rounded-full">
+            <span className="absolute right-0 top-0 w-5 h-5 flex items-center justify-center bg-pink-600 text-white text-xs rounded-full">
               {getCartCount()}
             </span>
           </Link>
 
           {/* Hamburger Menu */}
           <button
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors sm:hidden"
+            className="p-2 hover:bg-pink-50 rounded-full transition-colors sm:hidden"
             onClick={() => setVisible(!visible)}
           >
             <GiHamburgerMenu size={20} className="text-gray-600" />

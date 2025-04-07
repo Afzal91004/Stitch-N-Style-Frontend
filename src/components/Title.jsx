@@ -1,15 +1,15 @@
 import React from "react";
 
-const Title = ({ text1, text2 }) => {
+export const Title = ({ text1, text2 }) => {
   return (
-    <div className="flex flex-col justify-center gap-2 mb-1">
+    <div className="flex flex-col justify-center gap-2 mb-4">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-[1.5px] bg-gray-400"></div>
-        <h2 className="text-3xl font-semibold tracking-tight">
-          <span className="text-gray-400">{text1}</span>
-          <span className="text-gray-900">{text2}</span>
+        <div className="w-12 h-[2px] bg-gradient-to-r from-pink-400 to-transparent"></div>
+        <h2 className="text-3xl font-bold tracking-tight">
+          <span className="text-pink-500">{text1}</span>
+          <span className="text-gray-800">{text2}</span>
         </h2>
-        <div className="w-16 h-[1.5px] bg-gray-900"></div>
+        <div className="w-20 h-[2px] bg-gradient-to-r from-gray-800 to-transparent"></div>
       </div>
     </div>
   );

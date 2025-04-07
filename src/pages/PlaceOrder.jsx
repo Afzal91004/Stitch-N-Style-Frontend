@@ -70,6 +70,7 @@ const PlaceOrder = () => {
   const [method, setMethod] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
 
   const {
     navigate,
@@ -130,6 +131,11 @@ const PlaceOrder = () => {
         document.body.removeChild(script);
       }
     };
+  }, []);
+
+  useEffect(() => {
+    // Simulate initial page load
+    setTimeout(() => setPageLoading(false), 500);
   }, []);
 
   const handleInputChange = (e) => {
@@ -346,228 +352,260 @@ const PlaceOrder = () => {
     }
   };
 
-  return (
-    <div className="container mx-auto px-4 py-8 lg:px-12 bg-gray-50 min-h-screen">
-      <Toaster position="top-right" richColors />
-
-      <form onSubmit={onSubmitHandler} className="grid lg:grid-cols-2 gap-8">
-        {/* Delivery Information */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-          <div className="flex items-center gap-4 mb-6 border-b pb-4">
-            <MapPin className="text-pink-500" size={32} />
-            <h2 className="text-3xl font-bold text-gray-800">
-              Delivery Details
-            </h2>
-          </div>
-
-          <div className="space-y-6">
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div className="relative group">
-                <label className="block text-sm text-gray-600 mb-2">
-                  First Name
-                </label>
-                <input
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  type="text"
-                  placeholder="Enter first name"
-                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
-                />
-                <User
-                  className="absolute left-3 top-[58px] -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"
-                  size={20}
-                />
-              </div>
-              <div className="relative group">
-                <label className="block text-sm text-gray-600 mb-2">
-                  Last Name
-                </label>
-                <input
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  type="text"
-                  placeholder="Enter last name"
-                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
-                />
-                <User
-                  className="absolute left-3 top-[58px] -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"
-                  size={20}
-                />
+  if (pageLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-300 to-pink-100 py-8">
+        <div className="container mx-auto px-4 lg:px-12">
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Form placeholder */}
+            <div className="bg-white rounded-2xl shadow-2xl p-8 animate-pulse">
+              <div className="space-y-6">
+                <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+                <div className="grid sm:grid-cols-2 gap-6">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="h-12 bg-gray-200 rounded"></div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="relative group">
-              <label className="block text-sm text-gray-600 mb-2">
-                Email Address
-              </label>
-              <input
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                type="email"
-                placeholder="Enter email address"
-                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
-              />
-              <Mail
-                className="absolute left-3 top-[58px] -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"
-                size={20}
-              />
-            </div>
-
-            <div className="relative group">
-              <label className="block text-sm text-gray-600 mb-2">
-                Street Address
-              </label>
-              <input
-                name="streetAddress"
-                value={formData.streetAddress}
-                onChange={handleInputChange}
-                type="text"
-                placeholder="Enter street address"
-                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
-              />
-              <MapPin
-                className="absolute left-3 top-[58px] -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"
-                size={20}
-              />
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm text-gray-600 mb-2">City</label>
-                <input
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  type="text"
-                  placeholder="Enter city"
-                  className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
-                />
+            {/* Order summary placeholder */}
+            <div className="space-y-8">
+              <div className="bg-white rounded-2xl shadow-2xl p-8 animate-pulse">
+                <div className="space-y-4">
+                  <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-full"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm text-gray-600 mb-2">
-                  State
-                </label>
-                <input
-                  name="state"
-                  value={formData.state}
-                  onChange={handleInputChange}
-                  type="text"
-                  placeholder="Enter state"
-                  className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
-                />
-              </div>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm text-gray-600 mb-2">
-                  Pin Code
-                </label>
-                <input
-                  name="pinCode"
-                  value={formData.pinCode}
-                  onChange={handleInputChange}
-                  type="number"
-                  placeholder="Enter pin code"
-                  className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-600 mb-2">
-                  Country
-                </label>
-                <input
-                  name="country"
-                  value={formData.country}
-                  onChange={handleInputChange}
-                  type="text"
-                  placeholder="Enter country"
-                  className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
-                />
-              </div>
-            </div>
-
-            <div className="relative group">
-              <label className="block text-sm text-gray-600 mb-2">
-                Phone Number
-              </label>
-              <input
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleInputChange}
-                type="tel"
-                placeholder="Enter phone number"
-                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
-              />
-              <Phone
-                className="absolute left-3 top-[58px] -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"
-                size={20}
-              />
             </div>
           </div>
         </div>
+      </div>
+    );
+  }
 
-        {/* Order Summary & Payment */}
-        <div className="space-y-8">
-          {/* Cart Summary */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-300 to-pink-100 py-8">
+      <div className="container mx-auto px-4 lg:px-12">
+        <form onSubmit={onSubmitHandler} className="grid lg:grid-cols-2 gap-8">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 transition-all hover:shadow-xl">
             <div className="flex items-center gap-4 mb-6 border-b pb-4">
-              <ShoppingCart className="text-pink-500" size={32} />
-              <h3 className="text-3xl font-bold text-gray-800">
-                Order Summary
-              </h3>
+              <MapPin className="text-pink-500" size={32} />
+              <h2 className="text-3xl font-bold text-gray-800">
+                Delivery Details
+              </h2>
             </div>
-            <CartSummary />
+
+            <div className="space-y-6">
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div className="relative group">
+                  <label className="block text-sm text-gray-600 mb-2">
+                    First Name
+                  </label>
+                  <input
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    type="text"
+                    placeholder="Enter first name"
+                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+                  />
+                  <User
+                    className="absolute left-3 top-[58px] -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"
+                    size={20}
+                  />
+                </div>
+                <div className="relative group">
+                  <label className="block text-sm text-gray-600 mb-2">
+                    Last Name
+                  </label>
+                  <input
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    type="text"
+                    placeholder="Enter last name"
+                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+                  />
+                  <User
+                    className="absolute left-3 top-[58px] -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"
+                    size={20}
+                  />
+                </div>
+              </div>
+
+              <div className="relative group">
+                <label className="block text-sm text-gray-600 mb-2">
+                  Email Address
+                </label>
+                <input
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  type="email"
+                  placeholder="Enter email address"
+                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+                />
+                <Mail
+                  className="absolute left-3 top-[58px] -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"
+                  size={20}
+                />
+              </div>
+
+              <div className="relative group">
+                <label className="block text-sm text-gray-600 mb-2">
+                  Street Address
+                </label>
+                <input
+                  name="streetAddress"
+                  value={formData.streetAddress}
+                  onChange={handleInputChange}
+                  type="text"
+                  placeholder="Enter street address"
+                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+                />
+                <MapPin
+                  className="absolute left-3 top-[58px] -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"
+                  size={20}
+                />
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm text-gray-600 mb-2">
+                    City
+                  </label>
+                  <input
+                    name="city"
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    type="text"
+                    placeholder="Enter city"
+                    className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-600 mb-2">
+                    State
+                  </label>
+                  <input
+                    name="state"
+                    value={formData.state}
+                    onChange={handleInputChange}
+                    type="text"
+                    placeholder="Enter state"
+                    className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm text-gray-600 mb-2">
+                    Pin Code
+                  </label>
+                  <input
+                    name="pinCode"
+                    value={formData.pinCode}
+                    onChange={handleInputChange}
+                    type="number"
+                    placeholder="Enter pin code"
+                    className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-600 mb-2">
+                    Country
+                  </label>
+                  <input
+                    name="country"
+                    value={formData.country}
+                    onChange={handleInputChange}
+                    type="text"
+                    placeholder="Enter country"
+                    className="w-full py-3 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="relative group">
+                <label className="block text-sm text-gray-600 mb-2">
+                  Phone Number
+                </label>
+                <input
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  type="tel"
+                  placeholder="Enter phone number"
+                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all"
+                />
+                <Phone
+                  className="absolute left-3 top-[58px] -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500"
+                  size={20}
+                />
+              </div>
+            </div>
           </div>
 
-          {/* Payment Method */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-            <div className="flex items-center gap-4 mb-6 border-b pb-4">
-              <CreditCard className="text-pink-500" size={32} />
-              <h3 className="text-3xl font-bold text-gray-800">
-                Payment Method
-              </h3>
+          <div className="space-y-8">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 transition-all hover:shadow-xl">
+              <div className="flex items-center gap-4 mb-6 border-b pb-4">
+                <ShoppingCart className="text-pink-500" size={32} />
+                <h3 className="text-3xl font-bold text-gray-800">
+                  Order Summary
+                </h3>
+              </div>
+              <CartSummary />
             </div>
 
-            <div className="grid sm:grid-cols-3 gap-6">
-              {paymentMethods.map(({ method: methodItem, logo, label }) => (
-                <PaymentMethodButton
-                  key={methodItem}
-                  method={methodItem}
-                  selectedMethod={method}
-                  logo={logo}
-                  label={label}
-                  onClick={() => handleMethodSelection(methodItem)}
-                />
-              ))}
-            </div>
+            <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 transition-all hover:shadow-xl">
+              <div className="flex items-center gap-4 mb-6 border-b pb-4">
+                <CreditCard className="text-pink-500" size={32} />
+                <h3 className="text-3xl font-bold text-gray-800">
+                  Payment Method
+                </h3>
+              </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting || !method}
-              className={`
-                  w-full py-4 rounded-lg mt-8 text-lg font-semibold tracking-wide uppercase transition-all duration-300
+              <div className="grid sm:grid-cols-3 gap-6">
+                {paymentMethods.map(({ method: methodItem, logo, label }) => (
+                  <PaymentMethodButton
+                    key={methodItem}
+                    method={methodItem}
+                    selectedMethod={method}
+                    logo={logo}
+                    label={label}
+                    onClick={() => handleMethodSelection(methodItem)}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting || !method}
+                className={`
+                  w-full py-4 rounded-lg mt-8 text-lg font-semibold tracking-wide uppercase
+                  transition-all duration-300 transform hover:scale-105
                   ${
                     method && !isSubmitting
-                      ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg"
+                      ? "bg-gray-600 hover:bg-gray-700 text-white shadow-md hover:shadow-lg"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }
                 `}
-            >
-              {isSubmitting
-                ? "Processing..."
-                : method
-                ? `Pay ${getCartAmount() + deliveryFee} ${
-                    method === "stripe" ? "USD" : "INR"
-                  }`
-                : "Select Payment Method"}
-            </button>
+              >
+                {isSubmitting
+                  ? "Processing..."
+                  : method
+                  ? `Pay ${getCartAmount() + deliveryFee} ${
+                      method === "stripe" ? "USD" : "INR"
+                    }`
+                  : "Select Payment Method"}
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

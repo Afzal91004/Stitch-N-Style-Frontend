@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { Package, Truck, MapPin, Clock, CreditCard, Check } from "lucide-react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 const DeliveryStatusBar = ({ currentStatus }) => {
@@ -85,6 +86,33 @@ const OrderStatusBadge = ({ status }) => {
   );
 };
 
+const OrderLoadingPlaceholder = () => (
+  <div className="container mx-auto px-4 py-12">
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div className="animate-pulse space-y-4">
+        <div className="h-10 bg-gray-200 w-1/4 rounded"></div>
+        <div className="h-4 bg-gray-200 w-1/3 rounded"></div>
+
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="bg-white p-6 rounded-2xl space-y-4">
+            <div className="flex gap-4">
+              <div className="w-24 h-24 bg-gray-200 rounded-lg"></div>
+              <div className="flex-1 space-y-3">
+                <div className="h-5 bg-gray-200 w-3/4 rounded"></div>
+                <div className="h-4 bg-gray-200 w-1/4 rounded"></div>
+                <div className="h-4 bg-gray-200 w-1/2 rounded"></div>
+              </div>
+              <div className="w-32">
+                <div className="h-8 bg-gray-200 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
 const Orders = () => {
   const { currency, backendUrl, token } = useContext(ShopContext);
   const [orderData, setOrderData] = useState([]);
@@ -166,11 +194,7 @@ const Orders = () => {
   }, [token, backendUrl]);
 
   if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-12 text-center">
-        <div className="animate-pulse">Loading orders...</div>
-      </div>
-    );
+    return <OrderLoadingPlaceholder />;
   }
 
   if (error) {
@@ -182,109 +206,127 @@ const Orders = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-            <Package className="text-pink-600" size={32} />
-            My Orders
-          </h1>
-          <p className="text-gray-500 mt-2">
-            Track and manage your recent purchases
-          </p>
-        </div>
-
-        {orderData.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            No orders found. Start shopping to see your orders here.
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {displayedOrders.map((item, index) => (
-              <div
-                key={`${item.orderId}-${item._id}-${index}`}
-                className="bg-white shadow-md rounded-xl overflow-hidden border border-gray-100 transition-all hover:shadow-lg"
-              >
-                <div className="p-6 flex flex-col md:flex-row gap-6">
-                  <div className="flex-shrink-0 md:w-1/4">
-                    <img
-                      className="w-full h-36 object-cover rounded-lg shadow-sm transition-transform hover:scale-105"
-                      src={item.image[0]}
-                      alt={item.name}
-                    />
-                  </div>
-
-                  <div className="flex-grow md:w-1/2">
-                    <h2 className="text-xl font-semibold text-gray-800 mb-2">
-                      {item.name}
-                    </h2>
-
-                    <div className="flex flex-wrap items-center gap-3 text-gray-600 mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">
-                          {currency}
-                          {item.price}
-                        </span>
-                      </div>
-                      <div className="h-4 border-r border-gray-300"></div>
-                      <div className="flex items-center gap-2">
-                        <span>Quantity: {item.quantity}</span>
-                      </div>
-                      <div className="h-4 border-r border-gray-300"></div>
-                      <div className="flex items-center gap-2">
-                        <span>Size: {item.size}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2 text-sm text-gray-500">
-                      <div className="flex items-center gap-3">
-                        <MapPin size={16} className="text-pink-500" />
-                        <span>
-                          Order Date: {item.orderDate} at {item.orderTime}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <CreditCard size={16} className="text-pink-500" />
-                        <span>Payment: {item.paymentMethod}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="md:w-1/4 flex flex-col items-end justify-between">
-                    <OrderStatusBadge status={item.status} />
-                    <button
-                      className={`mt-4 w-full bg-blue-50 text-pink-600 border border-blue-200 py-2 rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center gap-2 ${
-                        isTracking ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
-                      onClick={() => trackOrder(item.orderId)}
-                      disabled={isTracking}
-                    >
-                      <Truck size={18} />
-                      {isTracking ? "Tracking..." : "Track Order"}
-                    </button>
-                  </div>
-                </div>
-
-                {expandedOrder === item.orderId && (
-                  <div className="px-6 pb-6">
-                    <DeliveryStatusBar currentStatus={item.status} />
-                  </div>
-                )}
+    <div className="min-h-screen bg-gradient-to-br from-gray-300 to-pink-100">
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8">
+            <div className="flex justify-between items-center">
+              {/* left */}
+              <div>
+                <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+                  <Package className="text-pink-600" size={32} />
+                  My Orders
+                </h1>
+                <p className="text-gray-500 mt-2">
+                  Track and manage your recent purchases
+                </p>
               </div>
-            ))}
+              {/* right */}
+              <div>
+                <Link
+                  to="/custom-order-history"
+                  className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors"
+                >
+                  My Custom Orders
+                </Link>
+              </div>
+            </div>
           </div>
-        )}
 
-        {displayedOrders.length < orderData.length && (
-          <div className="mt-8 text-center">
-            <button
-              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-              onClick={loadMore}
-            >
-              View More Orders
-            </button>
-          </div>
-        )}
+          {/* Rest of the code remains the same */}
+          {orderData.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              No orders found. Start shopping to see your orders here.
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {displayedOrders.map((item, index) => (
+                <div
+                  key={`${item.orderId}-${item._id}-${index}`}
+                  className="bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-100 transition-all hover:scale-105 duration-300"
+                >
+                  <div className="p-6 flex flex-col md:flex-row gap-6">
+                    <div className="flex-shrink-0 md:w-1/4">
+                      <img
+                        className="w-full h-36 object-cover rounded-lg shadow-sm transition-transform hover:scale-105"
+                        src={item.image[0]}
+                        alt={item.name}
+                      />
+                    </div>
+
+                    <div className="flex-grow md:w-1/2">
+                      <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                        {item.name}
+                      </h2>
+
+                      <div className="flex flex-wrap items-center gap-3 text-gray-600 mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">
+                            {currency}
+                            {item.price}
+                          </span>
+                        </div>
+                        <div className="h-4 border-r border-gray-300"></div>
+                        <div className="flex items-center gap-2">
+                          <span>Quantity: {item.quantity}</span>
+                        </div>
+                        <div className="h-4 border-r border-gray-300"></div>
+                        <div className="flex items-center gap-2">
+                          <span>Size: {item.size}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2 text-sm text-gray-500">
+                        <div className="flex items-center gap-3">
+                          <MapPin size={16} className="text-pink-500" />
+                          <span>
+                            Order Date: {item.orderDate} at {item.orderTime}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <CreditCard size={16} className="text-pink-500" />
+                          <span>Payment: {item.paymentMethod}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="md:w-1/4 flex flex-col items-end justify-between">
+                      <OrderStatusBadge status={item.status} />
+                      <button
+                        className={`mt-4 w-full bg-gray-600 text-white py-2 rounded-lg 
+                          hover:bg-gray-700 transition-all duration-300 
+                          flex items-center justify-center gap-2 transform hover:scale-105
+                          ${isTracking ? "opacity-50 cursor-not-allowed" : ""}`}
+                        onClick={() => trackOrder(item.orderId)}
+                        disabled={isTracking}
+                      >
+                        <Truck size={18} />
+                        {isTracking ? "Tracking..." : "Track Order"}
+                      </button>
+                    </div>
+                  </div>
+
+                  {expandedOrder === item.orderId && (
+                    <div className="px-6 pb-6">
+                      <DeliveryStatusBar currentStatus={item.status} />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {displayedOrders.length < orderData.length && (
+            <div className="mt-8 text-center">
+              <button
+                className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                onClick={loadMore}
+              >
+                View More Orders
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

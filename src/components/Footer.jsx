@@ -24,8 +24,8 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="container mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+      <div className="container mx-auto px-4 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Company Info */}
         <div className="text-center sm:text-left">
           <div className="flex justify-center sm:justify-start items-center mb-4">
@@ -36,24 +36,24 @@ const Footer = () => {
             />
             <img src={assets.kromaApps} alt="KromaApps Logo" className="h-8" />
           </div>
-          <p className="text-gray-400 text-sm mb-4 text-center sm:text-left">
+          <p className="text-gray-400 text-sm mb-4">
             Crafting beautiful designs and seamless experiences for fashion
             enthusiasts.
           </p>
-          <p className="text-gray-500 text-xs text-center sm:text-left">
+          <p className="text-gray-500 text-xs">
             © {new Date().getFullYear()} Stitch & Style by KromaApps
           </p>
         </div>
 
         {/* Quick Links */}
         <div className="text-center sm:text-left">
-          <h4 className="font-semibold mb-4">Quick Links</h4>
+          <h4 className="font-semibold mb-4 text-pink-400">Quick Links</h4>
           <ul className="space-y-2">
             {["Home", "Collections", "About Us", "Contact"].map((link) => (
               <li key={link}>
                 <a
                   href={`/${link.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="hover:text-pink-500 transition-colors"
+                  className="hover:text-pink-400 transition-colors"
                 >
                   {link}
                 </a>
@@ -64,7 +64,7 @@ const Footer = () => {
 
         {/* Services */}
         <div className="text-center sm:text-left">
-          <h4 className="font-semibold mb-4">Our Services</h4>
+          <h4 className="font-semibold mb-4 text-pink-400">Our Services</h4>
           <ul className="space-y-2">
             {[
               "Custom Design",
@@ -77,7 +77,7 @@ const Footer = () => {
                   href={`/services/${service
                     .toLowerCase()
                     .replace(/\s+/g, "-")}`}
-                  className="hover:text-pink-500 transition-colors"
+                  className="hover:text-pink-400 transition-colors"
                 >
                   {service}
                 </a>
@@ -88,7 +88,7 @@ const Footer = () => {
 
         {/* Contact & Social Media */}
         <div className="text-center sm:text-left">
-          <h4 className="font-semibold mb-4">Contact Us</h4>
+          <h4 className="font-semibold mb-4 text-pink-400">Contact Us</h4>
           <div className="space-y-3">
             {[
               {
@@ -110,9 +110,12 @@ const Footer = () => {
                 key={text}
                 className="flex items-center justify-center sm:justify-start"
               >
-                <Icon size={20} className="mr-2 text-pink-500" />
+                <Icon size={20} className="mr-2 text-pink-400" />
                 {link ? (
-                  <a href={link} className="hover:text-pink-500">
+                  <a
+                    href={link}
+                    className="hover:text-pink-400 transition-colors"
+                  >
                     {text}
                   </a>
                 ) : (
@@ -120,36 +123,19 @@ const Footer = () => {
                 )}
               </div>
             ))}
-
-            <div className="flex space-x-4 mt-4 justify-center sm:justify-start">
-              {[
-                { icon: Facebook, url: "https://facebook.com/kromaapps" },
-                { icon: Instagram, url: "https://instagram.com/kromaapps" },
-                { icon: Twitter, url: "https://twitter.com/kromaapps" },
-                { icon: Github, url: "https://github.com/kromaapps" },
-              ].map(({ icon: Icon, url }) => (
-                <a
-                  key={url}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-pink-500 transition-colors"
-                >
-                  <Icon size={24} />
-                </a>
-              ))}
-            </div>
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8 border-t border-gray-700">
-        <div className="max-w-2xl mx-auto text-center">
-          <h4 className="text-xl font-semibold mb-4">
+        <div className="max-w-2xl mx-auto">
+          <h4 className="text-xl font-semibold mb-4 text-center text-pink-400">
             Stay Fashionably Informed
           </h4>
           {subscribed ? (
-            <p className="text-green-500">Thank you for subscribing!</p>
+            <p className="text-green-400 text-center">
+              Thank you for subscribing!
+            </p>
           ) : (
             <form onSubmit={handleSubscribe} className="flex max-w-md mx-auto">
               <input
@@ -162,7 +148,7 @@ const Footer = () => {
               />
               <button
                 type="submit"
-                className="px-6 py-2 bg-pink-500 text-white rounded-r-lg hover:bg-pink-600 transition-colors flex items-center"
+                className="px-6 py-2 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-r-lg hover:from-pink-600 hover:to-pink-700 transition-colors flex items-center"
               >
                 <Send size={20} className="mr-2" /> Subscribe
               </button>
