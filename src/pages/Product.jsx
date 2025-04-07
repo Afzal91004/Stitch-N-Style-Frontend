@@ -150,18 +150,18 @@ const Product = () => {
 
   const handleAddToCart = () => {
     if (!size && productData.sizes && productData.sizes.length > 0) {
-      toast.error("Please select a size");
+      toast.error("Please select a size", {
+        toastId: "size-error", // Prevent duplicate error toasts
+      });
       return;
     }
-    console.log("Button clicked");
-    console.log("Current size:", size);
     addToCart(productData._id, size);
     toast.success("Added to cart!");
   };
 
   return (
     <div className="container mx-auto px-4 py-10 max-w-7xl bg-gradient-to-br from-gray-50 to-pink-50">
-      <ToastContainer position="top-right" autoClose={2000} />
+      <ToastContainer position="top-right" autoClose={1000} />
       <nav className="flex items-center text-xs text-gray-600 mb-8 pl-2">
         <a href="/shop" className="hover:text-gray-600 transition-colors">
           Shop

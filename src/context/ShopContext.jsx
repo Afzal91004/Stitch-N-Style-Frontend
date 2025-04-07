@@ -130,7 +130,7 @@ const ShopContextProvider = ({ children }) => {
 
       if (response.data.success) {
         setCartItems(response.data.cartData);
-        toast.success("Item added to cart");
+        // toast.success("Item added to cart");
       } else {
         throw new Error(response.data.message || "Failed to add item");
       }
