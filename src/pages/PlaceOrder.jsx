@@ -354,28 +354,31 @@ const PlaceOrder = () => {
 
   if (pageLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-300 to-pink-100 py-8">
-        <div className="container mx-auto px-4 lg:px-12">
-          <div className="grid lg:grid-cols-2 gap-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-300 to-pink-100 py-4 sm:py-6 md:py-8">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-12">
+          <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
             {/* Form placeholder */}
-            <div className="bg-white rounded-2xl shadow-2xl p-8 animate-pulse">
-              <div className="space-y-6">
-                <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-                <div className="grid sm:grid-cols-2 gap-6">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl p-4 sm:p-6 lg:p-8 animate-pulse">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="h-6 sm:h-8 bg-gray-200 rounded w-1/3"></div>
+                <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                   {[...Array(4)].map((_, i) => (
-                    <div key={i} className="h-12 bg-gray-200 rounded"></div>
+                    <div
+                      key={i}
+                      className="h-10 sm:h-12 bg-gray-200 rounded"
+                    ></div>
                   ))}
                 </div>
               </div>
             </div>
 
             {/* Order summary placeholder */}
-            <div className="space-y-8">
-              <div className="bg-white rounded-2xl shadow-2xl p-8 animate-pulse">
-                <div className="space-y-4">
-                  <div className="h-6 bg-gray-200 rounded w-1/4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-full"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="space-y-4 sm:space-y-6 lg:space-y-8">
+              <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl p-4 sm:p-6 lg:p-8 animate-pulse">
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="h-5 sm:h-6 bg-gray-200 rounded w-1/4"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 rounded w-full"></div>
+                  <div className="h-3 sm:h-4 bg-gray-200 rounded w-3/4"></div>
                 </div>
               </div>
             </div>
@@ -386,18 +389,21 @@ const PlaceOrder = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-300 to-pink-100 py-8">
-      <div className="container mx-auto px-4 lg:px-12">
-        <form onSubmit={onSubmitHandler} className="grid lg:grid-cols-2 gap-8">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 transition-all hover:shadow-xl">
-            <div className="flex items-center gap-4 mb-6 border-b pb-4">
-              <MapPin className="text-pink-500" size={32} />
-              <h2 className="text-3xl font-bold text-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-gray-300 to-pink-100 py-4 sm:py-6 md:py-8">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 lg:px-12">
+        <form
+          onSubmit={onSubmitHandler}
+          className="grid md:grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8"
+        >
+          <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl p-4 sm:p-6 lg:p-8 border border-gray-100 transition-all hover:shadow-xl">
+            <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 border-b pb-3 sm:pb-4">
+              <MapPin className="text-pink-500" size={24} sm:size={32} />
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
                 Delivery Details
               </h2>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="relative group">
                   <label className="block text-sm text-gray-600 mb-2">
@@ -549,26 +555,30 @@ const PlaceOrder = () => {
             </div>
           </div>
 
-          <div className="space-y-8">
-            <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 transition-all hover:shadow-xl">
-              <div className="flex items-center gap-4 mb-6 border-b pb-4">
-                <ShoppingCart className="text-pink-500" size={32} />
-                <h3 className="text-3xl font-bold text-gray-800">
+          <div className="space-y-4 sm:space-y-6 lg:space-y-8">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl p-4 sm:p-6 lg:p-8 border border-gray-100 transition-all hover:shadow-xl">
+              <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 border-b pb-3 sm:pb-4">
+                <ShoppingCart
+                  className="text-pink-500"
+                  size={24}
+                  sm:size={32}
+                />
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-800">
                   Order Summary
                 </h3>
               </div>
               <CartSummary />
             </div>
 
-            <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 transition-all hover:shadow-xl">
-              <div className="flex items-center gap-4 mb-6 border-b pb-4">
-                <CreditCard className="text-pink-500" size={32} />
-                <h3 className="text-3xl font-bold text-gray-800">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl p-4 sm:p-6 lg:p-8 border border-gray-100 transition-all hover:shadow-xl">
+              <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 border-b pb-3 sm:pb-4">
+                <CreditCard className="text-pink-500" size={24} sm:size={32} />
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-800">
                   Payment Method
                 </h3>
               </div>
 
-              <div className="grid sm:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
                 {paymentMethods.map(({ method: methodItem, logo, label }) => (
                   <PaymentMethodButton
                     key={methodItem}
@@ -585,8 +595,8 @@ const PlaceOrder = () => {
                 type="submit"
                 disabled={isSubmitting || !method}
                 className={`
-                  w-full py-4 rounded-lg mt-8 text-lg font-semibold tracking-wide uppercase
-                  transition-all duration-300 transform hover:scale-105
+                  w-full py-3 sm:py-4 rounded-lg mt-6 sm:mt-8 text-base sm:text-lg font-semibold tracking-wide uppercase
+                  transition-all duration-300 transform hover:scale-[1.02]
                   ${
                     method && !isSubmitting
                       ? "bg-gray-600 hover:bg-gray-700 text-white shadow-md hover:shadow-lg"

@@ -330,25 +330,29 @@ const CustomCloth = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-300 to-pink-100">
-      <div className="container mx-auto p-4 max-w-5xl ">
+      <div className="container mx-auto px-4 py-4 sm:py-6 md:p-8 max-w-5xl">
         <Card className="shadow-xl border-none bg-gradient-to-br from-white to-pink-50">
-          <CardHeader className="bg-gradient-to-r from-pink-100 via-purple-50 to-white-100 rounded-t-xl">
+          <CardHeader className="bg-gradient-to-r from-pink-100 via-purple-50 to-white-100 rounded-t-xl p-4 sm:p-5 md:p-6">
             <div className="flex flex-col justify-center gap-2">
-              <div className="flex items-center gap-3 justify-center">
-                <div className="w-12 h-[2px] bg-gradient-to-r from-pink-400 to-transparent"></div>
-                <CardTitle className="text-3xl font-extrabold">
+              <div className="flex items-center gap-2 md:gap-3 justify-center">
+                <div className="hidden md:block w-12 h-[2px] bg-gradient-to-r from-pink-400 to-transparent"></div>
+                <CardTitle className="text-xl sm:text-2xl md:text-3xl font-extrabold text-center">
                   <span className="text-pink-500">Design Your</span>
                   <span className="text-gray-800"> Dream Outfit</span>
                 </CardTitle>
-                <div className="w-20 h-[2px] bg-gradient-to-r from-gray-800 to-transparent"></div>
+                <div className="hidden md:block w-20 h-[2px] bg-gradient-to-r from-gray-800 to-transparent"></div>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="p-8">
-            <form onSubmit={handleSubmit}>
+
+          <CardContent className="p-3 sm:p-4 md:p-8">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-4 sm:space-y-6 md:space-y-8"
+            >
               {/* Progress indicator */}
-              <div className="mb-8">
-                <div className="flex justify-between text-sm font-medium mb-2">
+              <div className="mb-4 sm:mb-6 md:mb-8">
+                <div className="flex justify-between text-xs md:text-sm font-medium mb-2">
                   <span className="text-pink-700 font-semibold">
                     Step{" "}
                     {activeTab === "measurements"
@@ -385,30 +389,33 @@ const CustomCloth = () => {
               </div>
 
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="mb-8 grid grid-cols-3 bg-gradient-to-r from-pink-50 to-white-50 p-1 rounded-xl">
+                <TabsList className="mb-4 sm:mb-6 md:mb-8 grid grid-cols-3 bg-gradient-to-r from-pink-50 to-white-50 p-1 rounded-xl">
                   <TabsTrigger
                     value="measurements"
-                    className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-700 data-[state=active]:shadow-md rounded-lg transition-all duration-300"
+                    className="flex items-center justify-center gap-1 md:gap-2 text-xs sm:text-sm md:text-base data-[state=active]:bg-white data-[state=active]:text-pink-700 data-[state=active]:shadow-md rounded-lg transition-all duration-300"
                   >
-                    <Ruler size={18} /> Measurements
+                    <Ruler size={14} className="hidden sm:block" />
+                    <span className="truncate">Measurements</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="design"
-                    className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-700 data-[state=active]:shadow-md rounded-lg transition-all duration-300"
+                    className="flex items-center justify-center gap-1 md:gap-2 text-xs sm:text-sm md:text-base data-[state=active]:bg-white data-[state=active]:text-pink-700 data-[state=active]:shadow-md rounded-lg transition-all duration-300"
                   >
-                    <Palette size={18} /> Design
+                    <Palette size={14} className="hidden sm:block" />
+                    <span className="truncate">Design</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="reference"
-                    className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-pink-700 data-[state=active]:shadow-md rounded-lg transition-all duration-300"
+                    className="flex items-center justify-center gap-1 md:gap-2 text-xs sm:text-sm md:text-base data-[state=active]:bg-white data-[state=active]:text-pink-700 data-[state=active]:shadow-md rounded-lg transition-all duration-300"
                   >
-                    <Image size={18} /> Reference
+                    <Image size={14} className="hidden sm:block" />
+                    <span className="truncate">Reference</span>
                   </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="measurements" className="space-y-6">
-                  <div className="flex flex-col space-y-6">
-                    <div className="bg-white p-6 rounded-xl shadow-lg border border-pink-100 hover:shadow-xl transition-shadow">
+                <TabsContent value="measurements">
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="bg-white p-3 sm:p-4 md:p-6 rounded-xl shadow-lg border border-pink-100">
                       <h3 className="font-semibold text-lg mb-2 text-pink-800">
                         Size Selection
                       </h3>
@@ -446,7 +453,7 @@ const CustomCloth = () => {
                           <Label htmlFor="size" className="text-base">
                             Select your size
                           </Label>
-                          <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
                             {["XS", "S", "M", "L", "XL", "XXL"].map((size) => (
                               <Button
                                 key={size}
@@ -455,7 +462,7 @@ const CustomCloth = () => {
                                 variant={
                                   selectedSize === size ? "default" : "outline"
                                 }
-                                className={`h-14 ${
+                                className={`h-10 sm:h-12 md:h-14 text-xs sm:text-sm md:text-base ${
                                   selectedSize === size
                                     ? "bg-pink-600 hover:bg-pink-700 text-white"
                                     : "hover:bg-pink-50"
@@ -490,7 +497,7 @@ const CustomCloth = () => {
                       )}
 
                       {measurementMode === "custom" && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                           {Object.keys(measurements).map((field) => (
                             <div key={field} className="space-y-2">
                               <Label
@@ -538,250 +545,257 @@ const CustomCloth = () => {
                   </div>
                 </TabsContent>
 
-                <TabsContent value="design" className="space-y-6">
-                  <div className="bg-white p-6 rounded-xl shadow-lg border border-pink-100 hover:shadow-xl transition-shadow">
-                    <h3 className="font-semibold text-lg mb-2 text-pink-800">
-                      Design Details
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Customize your clothing with these design options
-                    </p>
+                <TabsContent value="design">
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="bg-white p-3 sm:p-4 md:p-6 rounded-xl shadow-lg border border-pink-100">
+                      <h3 className="font-semibold text-lg mb-2 text-pink-800">
+                        Design Details
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Customize your clothing with these design options
+                      </p>
 
-                    <div className="space-y-6">
-                      <div>
-                        <Label
-                          htmlFor="style"
-                          className="text-base flex items-center"
-                        >
-                          Style <span className="text-red-500 ml-1">*</span>
-                        </Label>
-                        <p className="text-xs text-gray-500 mb-2">
-                          Choose the overall design style
-                        </p>
-                        <Select
-                          value={design.style}
-                          onValueChange={(value) =>
-                            handleDesignChange("style", value)
-                          }
-                        >
-                          <SelectTrigger
-                            className={`${
-                              designErrors.style
-                                ? "border-red-500"
-                                : "border-gray-300"
-                            } focus:ring-pink-500`}
+                      <div className="space-y-4 sm:space-y-6">
+                        <div>
+                          <Label
+                            htmlFor="style"
+                            className="text-base flex items-center"
                           >
-                            <SelectValue placeholder="Select style" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="traditional">
-                              Traditional
-                            </SelectItem>
-                            <SelectItem value="modern">Modern</SelectItem>
-                            <SelectItem value="fusion">Fusion</SelectItem>
-                            <SelectItem value="minimalist">
-                              Minimalist
-                            </SelectItem>
-                            <SelectItem value="vintage">Vintage</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        {designErrors.style && (
-                          <p className="text-red-500 text-sm flex items-center mt-1">
-                            <AlertCircle size={12} className="mr-1" />
-                            {designErrors.style}
+                            Style <span className="text-red-500 ml-1">*</span>
+                          </Label>
+                          <p className="text-xs text-gray-500 mb-2">
+                            Choose the overall design style
                           </p>
-                        )}
-                      </div>
-
-                      <div>
-                        <Label
-                          htmlFor="fabric"
-                          className="text-base flex items-center"
-                        >
-                          Fabric Preference{" "}
-                          <span className="text-red-500 ml-1">*</span>
-                        </Label>
-                        <p className="text-xs text-gray-500 mb-2">
-                          Select your preferred fabric type
-                        </p>
-                        <Select
-                          value={design.fabric}
-                          onValueChange={(value) =>
-                            handleDesignChange("fabric", value)
-                          }
-                        >
-                          <SelectTrigger
-                            className={`${
-                              designErrors.fabric
-                                ? "border-red-500"
-                                : "border-gray-300"
-                            } focus:ring-pink-500`}
+                          <Select
+                            value={design.style}
+                            onValueChange={(value) =>
+                              handleDesignChange("style", value)
+                            }
                           >
-                            <SelectValue placeholder="Select fabric" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="cotton">Cotton</SelectItem>
-                            <SelectItem value="silk">Silk</SelectItem>
-                            <SelectItem value="linen">Linen</SelectItem>
-                            <SelectItem value="wool">Wool</SelectItem>
-                            <SelectItem value="polyester">
-                              Polyester Blend
-                            </SelectItem>
-                            <SelectItem value="denim">Denim</SelectItem>
-                            <SelectItem value="velvet">Velvet</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        {designErrors.fabric && (
-                          <p className="text-red-500 text-sm flex items-center mt-1">
-                            <AlertCircle size={12} className="mr-1" />
-                            {designErrors.fabric}
-                          </p>
-                        )}
-                      </div>
+                            <SelectTrigger
+                              className={`${
+                                designErrors.style
+                                  ? "border-red-500"
+                                  : "border-gray-300"
+                              } focus:ring-pink-500`}
+                            >
+                              <SelectValue placeholder="Select style" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="traditional">
+                                Traditional
+                              </SelectItem>
+                              <SelectItem value="modern">Modern</SelectItem>
+                              <SelectItem value="fusion">Fusion</SelectItem>
+                              <SelectItem value="minimalist">
+                                Minimalist
+                              </SelectItem>
+                              <SelectItem value="vintage">Vintage</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          {designErrors.style && (
+                            <p className="text-red-500 text-sm flex items-center mt-1">
+                              <AlertCircle size={12} className="mr-1" />
+                              {designErrors.style}
+                            </p>
+                          )}
+                        </div>
 
-                      <div>
-                        <Label
-                          htmlFor="customization"
-                          className="text-base flex items-center"
-                        >
-                          Special Requirements{" "}
-                          <span className="text-red-500 ml-1">*</span>
-                        </Label>
-                        <p className="text-xs text-gray-500 mb-2">
-                          Describe any special customizations you need
-                        </p>
-                        <Textarea
-                          id="customization"
-                          value={design.customization}
-                          onChange={(e) =>
-                            handleDesignChange("customization", e.target.value)
-                          }
-                          placeholder="Describe any special requirements or customizations"
-                          className={`h-32 ${
-                            designErrors.customization
-                              ? "border-red-500 focus:ring-red-500"
-                              : "focus:ring-pink-500"
-                          }`}
-                        />
-                        {designErrors.customization && (
-                          <p className="text-red-500 text-sm flex items-center mt-1">
-                            <AlertCircle size={12} className="mr-1" />
-                            {designErrors.customization}
+                        <div>
+                          <Label
+                            htmlFor="fabric"
+                            className="text-base flex items-center"
+                          >
+                            Fabric Preference{" "}
+                            <span className="text-red-500 ml-1">*</span>
+                          </Label>
+                          <p className="text-xs text-gray-500 mb-2">
+                            Select your preferred fabric type
                           </p>
-                        )}
+                          <Select
+                            value={design.fabric}
+                            onValueChange={(value) =>
+                              handleDesignChange("fabric", value)
+                            }
+                          >
+                            <SelectTrigger
+                              className={`${
+                                designErrors.fabric
+                                  ? "border-red-500"
+                                  : "border-gray-300"
+                              } focus:ring-pink-500`}
+                            >
+                              <SelectValue placeholder="Select fabric" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="cotton">Cotton</SelectItem>
+                              <SelectItem value="silk">Silk</SelectItem>
+                              <SelectItem value="linen">Linen</SelectItem>
+                              <SelectItem value="wool">Wool</SelectItem>
+                              <SelectItem value="polyester">
+                                Polyester Blend
+                              </SelectItem>
+                              <SelectItem value="denim">Denim</SelectItem>
+                              <SelectItem value="velvet">Velvet</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          {designErrors.fabric && (
+                            <p className="text-red-500 text-sm flex items-center mt-1">
+                              <AlertCircle size={12} className="mr-1" />
+                              {designErrors.fabric}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <Label
+                            htmlFor="customization"
+                            className="text-base flex items-center"
+                          >
+                            Special Requirements{" "}
+                            <span className="text-red-500 ml-1">*</span>
+                          </Label>
+                          <p className="text-xs text-gray-500 mb-2">
+                            Describe any special customizations you need
+                          </p>
+                          <Textarea
+                            id="customization"
+                            value={design.customization}
+                            onChange={(e) =>
+                              handleDesignChange(
+                                "customization",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Describe any special requirements or customizations"
+                            className={`h-32 ${
+                              designErrors.customization
+                                ? "border-red-500 focus:ring-red-500"
+                                : "focus:ring-pink-500"
+                            }`}
+                          />
+                          {designErrors.customization && (
+                            <p className="text-red-500 text-sm flex items-center mt-1">
+                              <AlertCircle size={12} className="mr-1" />
+                              {designErrors.customization}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex justify-end">
-                    <Button
-                      type="button"
-                      onClick={goToNextTab}
-                      className="bg-pink-600 hover:bg-pink-700 text-white px-6"
-                    >
-                      Next <ChevronRight size={16} className="ml-1" />
-                    </Button>
+                    <div className="flex justify-end">
+                      <Button
+                        type="button"
+                        onClick={goToNextTab}
+                        className="bg-pink-600 hover:bg-pink-700 text-white px-6"
+                      >
+                        Next <ChevronRight size={16} className="ml-1" />
+                      </Button>
+                    </div>
                   </div>
                 </TabsContent>
 
-                <TabsContent value="reference" className="space-y-6">
-                  <div className="bg-white p-6 rounded-xl shadow-lg border border-pink-100 hover:shadow-xl transition-shadow">
-                    <h3 className="font-semibold text-lg mb-2 text-pink-800">
-                      Reference Images
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Upload images that show your design inspiration
-                    </p>
-
-                    <div className="space-y-4">
-                      <div className="border-2 border-dashed border-pink-200 rounded-xl p-8 text-center hover:border-pink-400 transition-colors hover:bg-pink-50">
-                        <Label
-                          htmlFor="file-upload"
-                          className="cursor-pointer block"
-                        >
-                          <div className="flex flex-col items-center">
-                            <Image size={32} className="text-pink-500 mb-2" />
-                            <span className="text-base font-medium mb-1">
-                              Upload Reference Images
-                            </span>
-                            <span className="text-sm text-gray-500">
-                              Drag and drop or click to browse
-                            </span>
-                          </div>
-                          <Input
-                            id="file-upload"
-                            type="file"
-                            multiple
-                            accept="image/*"
-                            onChange={handleFileUpload}
-                            className="hidden"
-                          />
-                        </Label>
-                      </div>
-                      <p className="text-sm text-gray-500">
-                        Upload up to 5 images (max 5MB each) to help us
-                        understand your design preferences
+                <TabsContent value="reference">
+                  <div className="space-y-4 sm:space-y-6">
+                    <div className="bg-white p-3 sm:p-4 md:p-6 rounded-xl shadow-lg border border-pink-100">
+                      <h3 className="font-semibold text-lg mb-2 text-pink-800">
+                        Reference Images
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Upload images that show your design inspiration
                       </p>
 
-                      {attachments.length > 0 && (
-                        <div>
-                          <h4 className="font-medium text-sm mb-2">
-                            Uploaded Images ({attachments.length})
-                          </h4>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            {attachments.map((file, index) => (
-                              <div
-                                key={index}
-                                className="relative group rounded-lg overflow-hidden shadow-sm border hover:shadow-md transition-shadow"
-                              >
-                                <img
-                                  src={URL.createObjectURL(file)}
-                                  alt={`Reference ${index + 1}`}
-                                  className="w-full h-40 object-contain"
-                                />
-                                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
-                                  {file.name}
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={() => removeAttachment(index)}
-                                  className="absolute top-2 right-2 p-1.5 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-                                  aria-label="Remove image"
-                                >
-                                  <X size={14} />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
+                      <div className="space-y-4">
+                        <div className="border-2 border-dashed border-pink-200 rounded-xl p-8 text-center hover:border-pink-400 transition-colors hover:bg-pink-50">
+                          <Label
+                            htmlFor="file-upload"
+                            className="cursor-pointer block"
+                          >
+                            <div className="flex flex-col items-center">
+                              <Image size={32} className="text-pink-500 mb-2" />
+                              <span className="text-base font-medium mb-1">
+                                Upload Reference Images
+                              </span>
+                              <span className="text-sm text-gray-500">
+                                Drag and drop or click to browse
+                              </span>
+                            </div>
+                            <Input
+                              id="file-upload"
+                              type="file"
+                              multiple
+                              accept="image/*"
+                              onChange={handleFileUpload}
+                              className="hidden"
+                            />
+                          </Label>
                         </div>
-                      )}
-                    </div>
-                  </div>
+                        <p className="text-sm text-gray-500">
+                          Upload up to 5 images (max 5MB each) to help us
+                          understand your design preferences
+                        </p>
 
-                  <div className="flex justify-end">
-                    <Button
-                      type="submit"
-                      className="bg-green-600 hover:bg-green-700 text-white px-6"
-                      disabled={isSubmitting}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Submitting...
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle size={16} className="mr-2" />
-                          Submit Order
-                        </>
-                      )}
-                    </Button>
+                        {attachments.length > 0 && (
+                          <div>
+                            <h4 className="font-medium text-sm mb-2">
+                              Uploaded Images ({attachments.length})
+                            </h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                              {attachments.map((file, index) => (
+                                <div
+                                  key={index}
+                                  className="relative group rounded-lg overflow-hidden shadow-sm border hover:shadow-md transition-shadow aspect-square"
+                                >
+                                  <img
+                                    src={URL.createObjectURL(file)}
+                                    alt={`Reference ${index + 1}`}
+                                    className="w-full h-full object-cover"
+                                  />
+                                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
+                                    {file.name}
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => removeAttachment(index)}
+                                    className="absolute top-2 right-2 p-1.5 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                                    aria-label="Remove image"
+                                  >
+                                    <X size={14} />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                      <Button
+                        type="submit"
+                        className="bg-green-600 hover:bg-green-700 text-white px-6"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Submitting...
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle size={16} className="mr-2" />
+                            Submit Order
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </TabsContent>
               </Tabs>
 
               {(error || success) && (
-                <div className="mt-8">
+                <div className="mt-4 sm:mt-6 md:mt-8">
                   {error && (
                     <Alert
                       variant="destructive"

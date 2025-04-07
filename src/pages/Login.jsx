@@ -68,19 +68,19 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-300 to-pink-100 p-4">
-      <div className="w-full max-w-md bg-white shadow-2xl rounded-2xl overflow-hidden">
-        <div className="p-8">
-          <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-300 to-pink-100 p-2 sm:p-4 md:p-6">
+      <div className="w-full max-w-xs sm:max-w-sm md:max-w-md bg-white shadow-lg sm:shadow-xl md:shadow-2xl rounded-xl sm:rounded-2xl overflow-hidden">
+        <div className="p-4 sm:p-6 md:p-8">
+          <h2 className="text-2xl sm:text-3xl font-bold sm:font-extrabold text-center text-gray-800 mb-4 sm:mb-6">
             {currentState === "Login" ? "Welcome Back" : "Create Account"}
           </h2>
 
-          <form onSubmit={onSubmitHandler} className="space-y-6">
+          <form onSubmit={onSubmitHandler} className="space-y-4 sm:space-y-6">
             {currentState === "Sign Up" && (
               <div>
                 <label
                   htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2"
                 >
                   Full Name
                 </label>
@@ -89,7 +89,7 @@ const Login = () => {
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
                   placeholder="Enter your full name"
                   required
                 />
@@ -99,7 +99,7 @@ const Login = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2"
               >
                 Email Address
               </label>
@@ -108,7 +108,7 @@ const Login = () => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
                 placeholder="Enter your email"
                 required
               />
@@ -117,7 +117,7 @@ const Login = () => {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2"
               >
                 Password
               </label>
@@ -126,7 +126,7 @@ const Login = () => {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
                 placeholder="Enter your password"
                 required
               />
@@ -136,7 +136,7 @@ const Login = () => {
               <div>
                 <label
                   htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2"
                 >
                   Confirm Password
                 </label>
@@ -145,7 +145,7 @@ const Login = () => {
                   id="confirmPassword"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 transition duration-300"
                   placeholder="Confirm your password"
                   required
                 />
@@ -154,18 +154,18 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="w-full bg-gray-600 text-white py-2 sm:py-3 rounded-lg hover:bg-gray-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
             >
               {currentState === "Login" ? "Sign In" : "Create Account"}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-4 sm:mt-6 text-center">
             <button
               onClick={() =>
                 setCurrentState(currentState === "Login" ? "Sign Up" : "Login")
               }
-              className="text-gray-600 hover:underline focus:outline-none"
+              className="text-sm sm:text-base text-gray-600 hover:underline focus:outline-none"
             >
               {currentState === "Login"
                 ? "Create a new account"
@@ -173,8 +173,8 @@ const Login = () => {
             </button>
           </div>
 
-          <div className="mt-4 text-center">
-            <button className="text-sm text-gray-500 hover:underline focus:outline-none">
+          <div className="mt-2 sm:mt-4 text-center">
+            <button className="text-xs sm:text-sm text-gray-500 hover:underline focus:outline-none">
               Forgot Password?
             </button>
           </div>

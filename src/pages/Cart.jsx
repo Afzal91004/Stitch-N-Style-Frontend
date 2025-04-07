@@ -3,7 +3,6 @@ import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import { FaRegTrashAlt, FaShoppingCart } from "react-icons/fa";
 import CartSummary from "../components/CartSummary";
-import ProductLoadingPlaceholder from "../components/ProductLoadingPlaceholder";
 
 const Cart = () => {
   const { products, currency, cartItems, updateQuantity, navigate } =
@@ -46,27 +45,27 @@ const Cart = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid gap-8 md:grid-cols-[5fr_2fr]">
-          <div className="space-y-6">
+      <div className="container mx-auto px-4 py-6">
+        <div className="grid gap-6 lg:grid-cols-[5fr_2fr]">
+          <div className="space-y-4">
             {[...Array(3)].map((_, index) => (
               <div
                 key={index}
-                className="bg-white shadow-sm rounded-xl p-6 animate-pulse"
+                className="bg-white shadow-sm rounded-xl p-4 sm:p-6 animate-pulse"
               >
-                <div className="flex gap-6">
-                  <div className="w-24 h-24 bg-gray-200 rounded-lg"></div>
-                  <div className="flex-grow space-y-3">
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                  <div className="w-full sm:w-24 h-32 sm:h-24 bg-gray-200 rounded-lg"></div>
+                  <div className="flex-grow space-y-2 sm:space-y-3">
                     <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                     <div className="h-4 bg-gray-200 rounded w-1/4"></div>
                   </div>
-                  <div className="w-24 h-8 bg-gray-200 rounded"></div>
+                  <div className="w-full sm:w-24 h-8 bg-gray-200 rounded mt-2 sm:mt-0"></div>
                 </div>
               </div>
             ))}
           </div>
           <div>
-            <div className="bg-white shadow-sm rounded-xl p-6 animate-pulse">
+            <div className="bg-white shadow-sm rounded-xl p-4 sm:p-6 animate-pulse">
               <div className="space-y-4">
                 <div className="h-6 bg-gray-200 rounded w-1/2"></div>
                 <div className="h-4 bg-gray-200 rounded w-full"></div>
@@ -81,17 +80,17 @@ const Cart = () => {
 
   if (cartData.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[700px] bg-gradient-to-b from-gray-50 to-white">
-        <FaShoppingCart size={80} className="text-pink-200 mb-6" />
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+      <div className="flex flex-col items-center justify-center min-h-[50vh] sm:min-h-[700px] px-4 bg-gradient-to-b from-gray-50 to-white text-center">
+        <FaShoppingCart size={60} className="text-pink-200 mb-4 sm:mb-6" />
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">
           Your cart is empty
         </h2>
-        <p className="text-gray-500 mb-6">
+        <p className="text-gray-500 mb-4 sm:mb-6">
           Looks like you haven't added any items yet
         </p>
         <button
           onClick={() => navigate("/collection")}
-          className="px-6 py-3 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
+          className="px-5 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-pink-500 to-pink-600 text-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 w-full sm:w-auto max-w-xs"
         >
           Start Shopping
         </button>
@@ -100,29 +99,29 @@ const Cart = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
+    <div className="container mx-auto px-4 py-6 sm:py-8">
+      <div className="mb-6 sm:mb-8">
         <Title text1="MY " text2="CART" />
       </div>
 
-      <div className="grid gap-8 md:grid-cols-[5fr_2fr]">
-        <div className="space-y-6">
+      <div className="grid gap-6 lg:gap-8 lg:grid-cols-[5fr_2fr]">
+        <div className="space-y-4 sm:space-y-6">
           {cartData.map((item, index) => (
             <div
               key={index}
-              className="bg-white shadow-sm rounded-xl p-6 flex items-center gap-6 border border-gray-100 hover:shadow-md transition-shadow"
+              className="bg-white shadow-sm rounded-xl p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 border border-gray-100 hover:shadow-md transition-shadow"
             >
               <img
-                className="w-24 h-24 object-cover rounded-lg"
+                className="w-full sm:w-24 h-48 sm:h-24 object-contain rounded-lg max-w-xs"
                 src={item.productData.image[0]}
                 alt={item.productData.name}
               />
 
-              <div className="flex-grow">
+              <div className="flex-grow w-full text-center sm:text-left">
                 <h3 className="font-medium text-gray-800 hover:text-pink-600 transition-colors">
                   {item.productData.name}
                 </h3>
-                <div className="flex items-center gap-4 mt-2">
+                <div className="flex items-center justify-center sm:justify-start gap-4 mt-2">
                   <p className="text-pink-600 font-bold">
                     {currency} {item.productData.price.toFixed(2)}
                   </p>
@@ -132,7 +131,7 @@ const Cart = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center justify-between sm:justify-normal w-full sm:w-auto gap-4 mt-4 sm:mt-0">
                 <input
                   className="w-16 border border-gray-200 rounded-lg px-3 py-2 text-center focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                   type="number"
@@ -152,6 +151,7 @@ const Cart = () => {
                 <button
                   className="text-gray-400 hover:text-red-500 p-2 rounded-full transition-colors"
                   onClick={() => updateQuantity(item._id, item.size, 0)}
+                  aria-label="Remove item"
                 >
                   <FaRegTrashAlt size={20} />
                 </button>
@@ -160,11 +160,11 @@ const Cart = () => {
           ))}
         </div>
 
-        <div>
+        <div className="order-first lg:order-none mb-6 lg:mb-0">
           <CartSummary />
           <button
             onClick={() => navigate("/place-order")}
-            className="w-full mt-6 bg-gradient-to-r from-pink-500 to-pink-600 text-white py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+            className="w-full mt-4 sm:mt-6 bg-gradient-to-r from-pink-500 to-pink-600 text-white py-3 sm:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
           >
             Proceed to Checkout
           </button>
