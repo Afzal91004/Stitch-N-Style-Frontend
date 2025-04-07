@@ -57,30 +57,29 @@ const Header = () => {
 
         {/* Navigation Links */}
         <ul className="hidden sm:flex gap-8 text-sm">
-          {["HOME", "CRAFT YOUR LOOK", "COLLECTION", "DESIGNERS"].map(
-            (item) => (
-              <NavLink
-                key={item}
-                to={`/${
-                  item === "HOME" ? "" : item.toLowerCase().replace(/ /g, "-")
-                }`}
-                className={({ isActive }) => `
+          {/* {["HOME", "CRAFT YOUR LOOK", "COLLECTION", "DESIGNERS"].map( */}
+          {["HOME", "CRAFT YOUR LOOK", "COLLECTION"].map((item) => (
+            <NavLink
+              key={item}
+              to={`/${
+                item === "HOME" ? "" : item.toLowerCase().replace(/ /g, "-")
+              }`}
+              className={({ isActive }) => `
                 flex flex-col items-center gap-1 text-gray-600 hover:text-pink-600 transition-all duration-300
                 ${isActive ? "text-pink-600" : ""}
               `}
-              >
-                {({ isActive }) => (
-                  <>
-                    <p className="font-medium">{item}</p>
-                    <div
-                      className={`h-0.5 w-2/3 bg-pink-600 transition-transform duration-300
+            >
+              {({ isActive }) => (
+                <>
+                  <p className="font-medium">{item}</p>
+                  <div
+                    className={`h-0.5 w-2/3 bg-pink-600 transition-transform duration-300
                     ${isActive ? "scale-x-100" : "scale-x-0"}`}
-                    />
-                  </>
-                )}
-              </NavLink>
-            )
-          )}
+                  />
+                </>
+              )}
+            </NavLink>
+          ))}
         </ul>
 
         {/* Icons Section */}
@@ -196,16 +195,16 @@ const Header = () => {
                 <h2 className="text-lg font-semibold">Menu</h2>
               </div>
               <div className="flex flex-col p-4 gap-4">
-                {["HOME", "CRAFT YOUR LOOK", "COLLECTION", "DESIGNERS"].map(
-                  (item) => (
-                    <NavLink
-                      key={item}
-                      to={`/${
-                        item === "HOME"
-                          ? ""
-                          : item.toLowerCase().replace(/ /g, "-")
-                      }`}
-                      className={({ isActive }) => `
+                {/* {["HOME", "CRAFT YOUR LOOK", "COLLECTION", "DESIGNERS"].map( */}
+                {["HOME", "CRAFT YOUR LOOK", "COLLECTION"].map((item) => (
+                  <NavLink
+                    key={item}
+                    to={`/${
+                      item === "HOME"
+                        ? ""
+                        : item.toLowerCase().replace(/ /g, "-")
+                    }`}
+                    className={({ isActive }) => `
                       py-2 px-4 rounded-lg transition-colors
                       ${
                         isActive
@@ -213,12 +212,11 @@ const Header = () => {
                           : "text-gray-600 hover:bg-gray-50"
                       }
                     `}
-                      onClick={() => setVisible(false)}
-                    >
-                      {item}
-                    </NavLink>
-                  )
-                )}
+                    onClick={() => setVisible(false)}
+                  >
+                    {item}
+                  </NavLink>
+                ))}
               </div>
             </div>
           </div>
