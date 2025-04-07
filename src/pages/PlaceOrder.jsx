@@ -212,7 +212,7 @@ const PlaceOrder = () => {
       key: RAZORPAY_KEY_ID,
       amount: orderResponse.order.amount,
       currency: "INR",
-      name: "Your Shop Name",
+      name: "Stitch & Style",
       description: "Purchase Payment",
       order_id: orderResponse.order.id,
       prefill: {
