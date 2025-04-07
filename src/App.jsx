@@ -28,12 +28,6 @@ import SearchBar from "./components/SearchBar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ShopContext } from "./context/ShopContext";
-import {
-  DesignerLogin,
-  DesignerSignup,
-  DesignerPage,
-  DesignerDashboard,
-} from "../../Stitch-N-Style-Designers/src/pages/index";
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useContext(ShopContext);
@@ -92,12 +86,6 @@ const App = () => {
         <Route path="/profile" element={<UserProfile />} />
 
         <Route path="/custom-order-history" element={<CustomOrderHistory />} />
-
-        {/* Designer routess */}
-        <Route path="/designer-page" element={<DesignerPage />} />
-        <Route path="/designer/login" element={<DesignerLogin />} />
-        <Route path="/designer/signup" element={<DesignerSignup />} />
-        <Route path="/designer/dashboard" element={<DesignerDashboard />} />
 
         {/* Protected Routes */}
         <Route path="/" element={<Home />} />
