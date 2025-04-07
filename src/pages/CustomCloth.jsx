@@ -333,11 +333,16 @@ const CustomCloth = () => {
       <div className="container mx-auto p-4 max-w-5xl ">
         <Card className="shadow-xl border-none bg-gradient-to-br from-white to-pink-50">
           <CardHeader className="bg-gradient-to-r from-pink-100 via-purple-50 to-white-100 rounded-t-xl">
-            <CardTitle className="text-3xl font-extrabold text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-pink-600">
-              <hr className="w-12 h-[2px] bg-gradient-to-r from-pink-400 to-transparent" />
-              Design Your Dream Outfit
-              <hr className="w-10 h-[2px]  bg-gradient-to-r from-gray-800 to-transparent transition-all group-hover:w-12" />
-            </CardTitle>
+            <div className="flex flex-col justify-center gap-2">
+              <div className="flex items-center gap-3 justify-center">
+                <div className="w-12 h-[2px] bg-gradient-to-r from-pink-400 to-transparent"></div>
+                <CardTitle className="text-3xl font-extrabold">
+                  <span className="text-pink-500">Design Your</span>
+                  <span className="text-gray-800"> Dream Outfit</span>
+                </CardTitle>
+                <div className="w-20 h-[2px] bg-gradient-to-r from-gray-800 to-transparent"></div>
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="p-8">
             <form onSubmit={handleSubmit}>
