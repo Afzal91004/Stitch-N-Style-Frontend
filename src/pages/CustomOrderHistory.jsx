@@ -848,104 +848,385 @@ const CustomOrderHistory = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <Toaster position="top-right" richColors />
-      <div className="space-y-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Custom Orders</h1>
-            <p className="text-gray-600 mt-1">
-              View and manage your custom clothing orders
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-300 to-pink-100">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <Toaster position="top-right" richColors />
+        <div className="space-y-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">
+                Custom Orders
+              </h1>
+              <p className="text-gray-600 mt-1">
+                View and manage your custom clothing orders
+              </p>
+            </div>
+            <Button
+              onClick={fetchOrders}
+              variant="outline"
+              className="text-indigo-600 border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300"
+            >
+              <RefreshCw size={16} className="mr-2" />
+              Refresh
+            </Button>
           </div>
-          <Button
-            onClick={fetchOrders}
-            variant="outline"
-            className="text-indigo-600 border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300"
-          >
-            <RefreshCw size={16} className="mr-2" />
-            Refresh
-          </Button>
+
+          {error && (
+            <div className="bg-red-50 text-red-700 p-4 rounded-lg flex items-center border border-red-200">
+              <AlertCircle size={20} className="mr-3" />
+              {error}
+            </div>
+          )}
+
+          {loading ? (
+            <div className="flex justify-center items-center py-16">
+              <div className="flex flex-col items-center space-y-4">
+                <Loader2 size={40} className="animate-spin text-indigo-600" />
+                <span className="text-indigo-700 font-medium">
+                  Loading your orders...
+                </span>
+              </div>
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="text-center py-16 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-gray-100">
+              <div className="max-w-md mx-auto">
+                <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Shirt size={32} className="text-indigo-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                  No Custom Orders Yet
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  You haven't placed any custom orders yet. Create your first
+                  custom clothing piece tailored just for you.
+                </p>
+                <Button
+                  onClick={() => navigate("/custom-cloth")}
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all"
+                >
+                  Create Custom Order
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {orders.map((order) => (
+                <OrderCard
+                  key={order._id}
+                  order={order}
+                  onViewDetails={handleViewDetails}
+                  onAcceptBid={handleAcceptBidClick}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
-        {error && (
-          <div className="bg-red-50 text-red-700 p-4 rounded-lg flex items-center border border-red-200">
-            <AlertCircle size={20} className="mr-3" />
-            {error}
-          </div>
-        )}
+        {/* Order Details Modal */}
+        {isModalOpen &&
+          selectedOrder &&
+          !isAcceptingBid &&
+          !isPaymentModalOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+              <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl border border-gray-200">
+                <div className="p-6 border-b flex justify-between items-center bg-gradient-to-r from-indigo-50 to-purple-50">
+                  <div>
+                    <h2 className="text-xl font-bold flex items-center gap-3">
+                      Order #{selectedOrder._id.slice(-6)}
+                      <StatusPill status={selectedOrder.status} />
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Placed on{" "}
+                      {new Date(selectedOrder.createdAt).toLocaleDateString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        }
+                      )}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="p-2 hover:bg-gray-100 rounded-full"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
 
-        {loading ? (
-          <div className="flex justify-center items-center py-16">
-            <div className="flex flex-col items-center space-y-4">
-              <Loader2 size={40} className="animate-spin text-indigo-600" />
-              <span className="text-indigo-700 font-medium">
-                Loading your orders...
-              </span>
-            </div>
-          </div>
-        ) : orders.length === 0 ? (
-          <div className="text-center py-16 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-gray-100">
-            <div className="max-w-md mx-auto">
-              <div className="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shirt size={32} className="text-indigo-600" />
+                <div className="flex-1 overflow-y-auto p-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-1 space-y-6">
+                      <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                        <h3 className="font-semibold mb-4 text-gray-800">
+                          Order Summary
+                        </h3>
+                        <div className="space-y-3">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Order ID:</span>
+                            <span className="font-medium">
+                              {selectedOrder._id}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Date Placed:</span>
+                            <span className="font-medium">
+                              {new Date(
+                                selectedOrder.createdAt
+                              ).toLocaleDateString()}
+                            </span>
+                          </div>
+                          {selectedOrder.price && (
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600">Price:</span>
+                              <span className="font-medium">
+                                ₹{selectedOrder.price}
+                              </span>
+                            </div>
+                          )}
+                          {selectedOrder.estimatedDelivery && (
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600">
+                                Est. Delivery:
+                              </span>
+                              <span className="font-medium">
+                                {new Date(
+                                  selectedOrder.estimatedDelivery
+                                ).toLocaleDateString()}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {selectedOrder.status === "pending" &&
+                          selectedOrder.price && (
+                            <div className="mt-6">
+                              <Button
+                                onClick={() => {
+                                  setIsAcceptingBid(true);
+                                }}
+                                className="w-full bg-indigo-600 hover:bg-indigo-700"
+                              >
+                                <Check size={14} className="mr-1" />
+                                Accept Bid & Proceed
+                              </Button>
+                            </div>
+                          )}
+
+                        {selectedOrder.status === "accepted" && (
+                          <div className="mt-6">
+                            <Button
+                              onClick={() => {
+                                setIsPaymentModalOpen(true);
+                              }}
+                              className="w-full bg-indigo-600 hover:bg-indigo-700"
+                            >
+                              <CreditCard size={14} className="mr-1" />
+                              Proceed to Payment
+                            </Button>
+                          </div>
+                        )}
+
+                        {selectedOrder.tracking && (
+                          <div className="bg-gray-50 p-5 rounded-xl border border-gray-200 mt-6">
+                            <h3 className="font-semibold mb-3 flex items-center gap-2">
+                              <Truck size={18} className="text-indigo-600" />
+                              Shipping Information
+                            </h3>
+                            <div className="space-y-2">
+                              <div className="flex justify-between text-sm">
+                                <span className="text-gray-600">Carrier:</span>
+                                <span className="font-medium">
+                                  {selectedOrder.tracking.carrier}
+                                </span>
+                              </div>
+                              <div className="flex justify-between text-sm">
+                                <span className="text-gray-600">
+                                  Tracking Number:
+                                </span>
+                                <span className="font-medium">
+                                  {selectedOrder.tracking.number}
+                                </span>
+                              </div>
+                              {selectedOrder.shippedAt && (
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-gray-600">
+                                    Shipped Date:
+                                  </span>
+                                  <span className="font-medium">
+                                    {new Date(
+                                      selectedOrder.shippedAt
+                                    ).toLocaleDateString()}
+                                  </span>
+                                </div>
+                              )}
+                              {selectedOrder.deliveredAt && (
+                                <div className="flex justify-between text-sm">
+                                  <span className="text-gray-600">
+                                    Delivered Date:
+                                  </span>
+                                  <span className="font-medium">
+                                    {new Date(
+                                      selectedOrder.deliveredAt
+                                    ).toLocaleDateString()}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                        <h3 className="font-semibold mb-4 text-gray-800">
+                          Order Status
+                        </h3>
+                        <div className="space-y-4">
+                          <div>
+                            <p className="text-sm font-medium mb-2">
+                              Current Status
+                            </p>
+                            <StatusPill status={selectedOrder.status} />
+                          </div>
+                          <ProgressStepper status={selectedOrder.status} />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="lg:col-span-2 space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                          <h3 className="font-semibold mb-4 text-gray-800 flex items-center gap-2">
+                            <Shirt size={18} className="text-indigo-600" />
+                            Design Details
+                          </h3>
+                          <div className="space-y-3">
+                            {Object.entries(selectedOrder.design).map(
+                              ([key, value]) => (
+                                <div
+                                  key={key}
+                                  className="flex justify-between text-sm"
+                                >
+                                  <span className="capitalize text-gray-600">
+                                    {key.replace(/_/g, " ")}:
+                                  </span>
+                                  <span className="font-medium">{value}</span>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                          <h3 className="font-semibold mb-4 text-gray-800 flex items-center gap-2">
+                            <Ruler size={18} className="text-indigo-600" />
+                            Measurements
+                          </h3>
+                          <div className="space-y-3">
+                            {Object.entries(selectedOrder.measurements).map(
+                              ([key, value]) => (
+                                <div
+                                  key={key}
+                                  className="flex justify-between text-sm"
+                                >
+                                  <span className="capitalize text-gray-600">
+                                    {key.replace(/_/g, " ")}:
+                                  </span>
+                                  <span className="font-medium">
+                                    {value} inches
+                                  </span>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {selectedOrder.referenceImages?.length > 0 && (
+                        <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                          <h3 className="font-semibold mb-4 text-gray-800">
+                            Reference Images
+                          </h3>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            {selectedOrder.referenceImages.map(
+                              (image, index) => (
+                                <div
+                                  key={index}
+                                  className="aspect-square rounded-lg overflow-hidden bg-gray-100 border border-gray-200"
+                                >
+                                  <img
+                                    src={image}
+                                    alt={`Reference ${index + 1}`}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedOrder.designerNotes && (
+                        <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                          <h3 className="font-semibold mb-3 text-gray-800">
+                            Designer Notes
+                          </h3>
+                          <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                            {selectedOrder.designerNotes}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-6 border-t bg-gray-50">
+                  <div className="flex justify-between">
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsModalOpen(false)}
+                    >
+                      Close
+                    </Button>
+
+                    {selectedOrder.status === "completed" && (
+                      <Button className="bg-green-600 hover:bg-green-700">
+                        <CheckCircle size={14} className="mr-1" />
+                        Leave Review
+                      </Button>
+                    )}
+
+                    {selectedOrder.status === "pending" && (
+                      <Button
+                        variant="outline"
+                        className="border-red-200 text-red-500 hover:bg-red-50"
+                        onClick={() => handleCancelOrder(selectedOrder._id)}
+                      >
+                        <X size={14} className="mr-1" />
+                        Cancel Order
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                No Custom Orders Yet
-              </h3>
-              <p className="text-gray-600 mb-6">
-                You haven't placed any custom orders yet. Create your first
-                custom clothing piece tailored just for you.
-              </p>
-              <Button
-                onClick={() => navigate("/custom-cloth")}
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all"
-              >
-                Create Custom Order
-              </Button>
             </div>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {orders.map((order) => (
-              <OrderCard
-                key={order._id}
-                order={order}
-                onViewDetails={handleViewDetails}
-                onAcceptBid={handleAcceptBidClick}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+          )}
 
-      {/* Order Details Modal */}
-      {isModalOpen &&
-        selectedOrder &&
-        !isAcceptingBid &&
-        !isPaymentModalOpen && (
+        {/* Accept Bid Modal */}
+        {isModalOpen && selectedOrder && isAcceptingBid && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl border border-gray-200">
+            <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl border border-gray-200">
               <div className="p-6 border-b flex justify-between items-center bg-gradient-to-r from-indigo-50 to-purple-50">
                 <div>
-                  <h2 className="text-xl font-bold flex items-center gap-3">
-                    Order #{selectedOrder._id.slice(-6)}
-                    <StatusPill status={selectedOrder.status} />
-                  </h2>
+                  <h2 className="text-xl font-bold">Complete Your Order</h2>
                   <p className="text-sm text-gray-500 mt-1">
-                    Placed on{" "}
-                    {new Date(selectedOrder.createdAt).toLocaleDateString(
-                      "en-US",
-                      {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      }
-                    )}
+                    Order #{selectedOrder._id.slice(-6)} - Price: ₹
+                    {selectedOrder.price}
                   </p>
                 </div>
                 <button
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => setIsAcceptingBid(false)}
                   className="p-2 hover:bg-gray-100 rounded-full"
                 >
                   <X size={20} />
@@ -953,225 +1234,211 @@ const CustomOrderHistory = () => {
               </div>
 
               <div className="flex-1 overflow-y-auto p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <div className="lg:col-span-1 space-y-6">
-                    <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-                      <h3 className="font-semibold mb-4 text-gray-800">
-                        Order Summary
-                      </h3>
-                      <div className="space-y-3">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Order ID:</span>
-                          <span className="font-medium">
-                            {selectedOrder._id}
-                          </span>
+                {checkoutError && (
+                  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-start">
+                    <AlertCircle
+                      size={18}
+                      className="mr-3 mt-0.5 flex-shrink-0"
+                    />
+                    <div>
+                      <p className="font-medium">Error</p>
+                      <p className="text-sm">{checkoutError}</p>
+                    </div>
+                  </div>
+                )}
+
+                {checkoutSuccess && (
+                  <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-start">
+                    <CheckCircle
+                      size={18}
+                      className="mr-3 mt-0.5 flex-shrink-0"
+                    />
+                    <div>
+                      <p className="font-medium">Success</p>
+                      <p className="text-sm">{checkoutSuccess}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-8">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <MapPin size={20} className="text-indigo-600" />
+                      Shipping Address
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="relative group">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Address Line 1*
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            name="addressLine1"
+                            value={shippingAddress.addressLine1}
+                            onChange={handleInputChange}
+                            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="House No., Building Name"
+                            required
+                          />
+                          <MapPin
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500"
+                            size={18}
+                          />
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Date Placed:</span>
-                          <span className="font-medium">
-                            {new Date(
-                              selectedOrder.createdAt
-                            ).toLocaleDateString()}
-                          </span>
-                        </div>
-                        {selectedOrder.price && (
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">Price:</span>
-                            <span className="font-medium">
-                              ₹{selectedOrder.price}
-                            </span>
-                          </div>
-                        )}
-                        {selectedOrder.estimatedDelivery && (
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">
-                              Est. Delivery:
-                            </span>
-                            <span className="font-medium">
-                              {new Date(
-                                selectedOrder.estimatedDelivery
-                              ).toLocaleDateString()}
-                            </span>
-                          </div>
-                        )}
                       </div>
 
-                      {selectedOrder.status === "pending" &&
-                        selectedOrder.price && (
-                          <div className="mt-6">
-                            <Button
-                              onClick={() => {
-                                setIsAcceptingBid(true);
-                              }}
-                              className="w-full bg-indigo-600 hover:bg-indigo-700"
-                            >
-                              <Check size={14} className="mr-1" />
-                              Accept Bid & Proceed
-                            </Button>
-                          </div>
-                        )}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Address Line 2 (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          name="addressLine2"
+                          value={shippingAddress.addressLine2}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          placeholder="Apartment, Street, Locality"
+                        />
+                      </div>
 
-                      {selectedOrder.status === "accepted" && (
-                        <div className="mt-6">
-                          <Button
-                            onClick={() => {
-                              setIsPaymentModalOpen(true);
-                            }}
-                            className="w-full bg-indigo-600 hover:bg-indigo-700"
-                          >
-                            <CreditCard size={14} className="mr-1" />
-                            Proceed to Payment
-                          </Button>
-                        </div>
-                      )}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          City*
+                        </label>
+                        <input
+                          type="text"
+                          name="city"
+                          value={shippingAddress.city}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          required
+                        />
+                      </div>
 
-                      {selectedOrder.tracking && (
-                        <div className="bg-gray-50 p-5 rounded-xl border border-gray-200 mt-6">
-                          <h3 className="font-semibold mb-3 flex items-center gap-2">
-                            <Truck size={18} className="text-indigo-600" />
-                            Shipping Information
-                          </h3>
-                          <div className="space-y-2">
-                            <div className="flex justify-between text-sm">
-                              <span className="text-gray-600">Carrier:</span>
-                              <span className="font-medium">
-                                {selectedOrder.tracking.carrier}
-                              </span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                              <span className="text-gray-600">
-                                Tracking Number:
-                              </span>
-                              <span className="font-medium">
-                                {selectedOrder.tracking.number}
-                              </span>
-                            </div>
-                            {selectedOrder.shippedAt && (
-                              <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">
-                                  Shipped Date:
-                                </span>
-                                <span className="font-medium">
-                                  {new Date(
-                                    selectedOrder.shippedAt
-                                  ).toLocaleDateString()}
-                                </span>
-                              </div>
-                            )}
-                            {selectedOrder.deliveredAt && (
-                              <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">
-                                  Delivered Date:
-                                </span>
-                                <span className="font-medium">
-                                  {new Date(
-                                    selectedOrder.deliveredAt
-                                  ).toLocaleDateString()}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          State/Province*
+                        </label>
+                        <input
+                          type="text"
+                          name="state"
+                          value={shippingAddress.state}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          required
+                        />
+                      </div>
 
-                    <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-                      <h3 className="font-semibold mb-4 text-gray-800">
-                        Order Status
-                      </h3>
-                      <div className="space-y-4">
-                        <div>
-                          <p className="text-sm font-medium mb-2">
-                            Current Status
-                          </p>
-                          <StatusPill status={selectedOrder.status} />
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          PIN/Postal Code*
+                        </label>
+                        <input
+                          type="text"
+                          name="postalCode"
+                          value={shippingAddress.postalCode}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          required
+                        />
+                      </div>
+
+                      <div className="relative group">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Phone Number*
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="tel"
+                            name="phoneNumber"
+                            value={shippingAddress.phoneNumber}
+                            onChange={handleInputChange}
+                            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="10-digit mobile number"
+                            required
+                          />
+                          <Phone
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500"
+                            size={18}
+                          />
                         </div>
-                        <ProgressStepper status={selectedOrder.status} />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Country
+                        </label>
+                        <select
+                          name="country"
+                          value={shippingAddress.country}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        >
+                          <option value="India">India</option>
+                        </select>
                       </div>
                     </div>
                   </div>
 
-                  <div className="lg:col-span-2 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-                        <h3 className="font-semibold mb-4 text-gray-800 flex items-center gap-2">
-                          <Shirt size={18} className="text-indigo-600" />
-                          Design Details
-                        </h3>
-                        <div className="space-y-3">
-                          {Object.entries(selectedOrder.design).map(
-                            ([key, value]) => (
-                              <div
-                                key={key}
-                                className="flex justify-between text-sm"
-                              >
-                                <span className="capitalize text-gray-600">
-                                  {key.replace(/_/g, " ")}:
-                                </span>
-                                <span className="font-medium">{value}</span>
-                              </div>
-                            )
-                          )}
-                        </div>
-                      </div>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <CreditCard size={20} className="text-indigo-600" />
+                      Payment Method
+                    </h3>
 
-                      <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-                        <h3 className="font-semibold mb-4 text-gray-800 flex items-center gap-2">
-                          <Ruler size={18} className="text-indigo-600" />
-                          Measurements
-                        </h3>
-                        <div className="space-y-3">
-                          {Object.entries(selectedOrder.measurements).map(
-                            ([key, value]) => (
-                              <div
-                                key={key}
-                                className="flex justify-between text-sm"
-                              >
-                                <span className="capitalize text-gray-600">
-                                  {key.replace(/_/g, " ")}:
-                                </span>
-                                <span className="font-medium">
-                                  {value} inches
-                                </span>
-                              </div>
-                            )
-                          )}
-                        </div>
-                      </div>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      {paymentMethods.map(
+                        ({ method: methodItem, logo, label }) => (
+                          <PaymentMethodButton
+                            key={methodItem}
+                            method={methodItem}
+                            selectedMethod={paymentMethod}
+                            logo={logo}
+                            label={label}
+                            onClick={() => setPaymentMethod(methodItem)}
+                          />
+                        )
+                      )}
                     </div>
+                  </div>
 
-                    {selectedOrder.referenceImages?.length > 0 && (
-                      <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-                        <h3 className="font-semibold mb-4 text-gray-800">
-                          Reference Images
-                        </h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                          {selectedOrder.referenceImages.map((image, index) => (
-                            <div
-                              key={index}
-                              className="aspect-square rounded-lg overflow-hidden bg-gray-100 border border-gray-200"
-                            >
-                              <img
-                                src={image}
-                                alt={`Reference ${index + 1}`}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                          ))}
-                        </div>
+                  <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                    <h3 className="font-semibold mb-4 text-gray-800">
+                      Order Summary
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Design:</span>
+                        <span className="font-medium">
+                          {selectedOrder.design.style}
+                        </span>
                       </div>
-                    )}
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Fabric:</span>
+                        <span className="font-medium">
+                          {selectedOrder.design.fabric}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Color:</span>
+                        <span className="font-medium">
+                          {selectedOrder.design.color}
+                        </span>
+                      </div>
 
-                    {selectedOrder.designerNotes && (
-                      <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-                        <h3 className="font-semibold mb-3 text-gray-800">
-                          Designer Notes
-                        </h3>
-                        <p className="text-sm text-gray-600 whitespace-pre-wrap">
-                          {selectedOrder.designerNotes}
+                      <div className="border-t my-3 pt-3">
+                        <div className="flex justify-between font-medium">
+                          <span>Total Amount:</span>
+                          <span className="text-lg text-indigo-600">
+                            ₹{selectedOrder.price}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          (Includes all taxes and shipping charges)
                         </p>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1180,432 +1447,171 @@ const CustomOrderHistory = () => {
                 <div className="flex justify-between">
                   <Button
                     variant="outline"
-                    onClick={() => setIsModalOpen(false)}
+                    onClick={() => setIsAcceptingBid(false)}
+                    disabled={processingOrder}
                   >
-                    Close
+                    Back
                   </Button>
 
-                  {selectedOrder.status === "completed" && (
-                    <Button className="bg-green-600 hover:bg-green-700">
-                      <CheckCircle size={14} className="mr-1" />
-                      Leave Review
-                    </Button>
-                  )}
-
-                  {selectedOrder.status === "pending" && (
-                    <Button
-                      variant="outline"
-                      className="border-red-200 text-red-500 hover:bg-red-50"
-                      onClick={() => handleCancelOrder(selectedOrder._id)}
-                    >
-                      <X size={14} className="mr-1" />
-                      Cancel Order
-                    </Button>
-                  )}
+                  <Button
+                    className="bg-indigo-600 hover:bg-indigo-700 min-w-[180px]"
+                    onClick={handleAcceptBid}
+                    disabled={processingOrder}
+                  >
+                    {processingOrder ? (
+                      <>
+                        <Loader2 size={16} className="mr-2 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle size={16} className="mr-2" />
+                        {paymentMethod === "razorpay"
+                          ? `Pay ₹${selectedOrder.price}`
+                          : "Place Order"}
+                      </>
+                    )}
+                  </Button>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-      {/* Accept Bid Modal */}
-      {isModalOpen && selectedOrder && isAcceptingBid && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl border border-gray-200">
-            <div className="p-6 border-b flex justify-between items-center bg-gradient-to-r from-indigo-50 to-purple-50">
-              <div>
-                <h2 className="text-xl font-bold">Complete Your Order</h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  Order #{selectedOrder._id.slice(-6)} - Price: ₹
-                  {selectedOrder.price}
-                </p>
+        {/* Payment Modal */}
+        {isPaymentModalOpen && selectedOrder && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl w-full max-w-md flex flex-col shadow-2xl border border-gray-200">
+              <div className="p-6 border-b flex justify-between items-center bg-gradient-to-r from-indigo-50 to-purple-50">
+                <div>
+                  <h2 className="text-xl font-bold">Complete Payment</h2>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Order #{selectedOrder._id.slice(-6)} - Amount: ₹
+                    {selectedOrder.price}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsPaymentModalOpen(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full"
+                >
+                  <X size={20} />
+                </button>
               </div>
-              <button
-                onClick={() => setIsAcceptingBid(false)}
-                className="p-2 hover:bg-gray-100 rounded-full"
-              >
-                <X size={20} />
-              </button>
-            </div>
 
-            <div className="flex-1 overflow-y-auto p-6">
-              {checkoutError && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-start">
-                  <AlertCircle
-                    size={18}
-                    className="mr-3 mt-0.5 flex-shrink-0"
-                  />
-                  <div>
-                    <p className="font-medium">Error</p>
-                    <p className="text-sm">{checkoutError}</p>
+              <div className="flex-1 overflow-y-auto p-6">
+                {checkoutError && (
+                  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-start">
+                    <AlertCircle
+                      size={18}
+                      className="mr-3 mt-0.5 flex-shrink-0"
+                    />
+                    <div>
+                      <p className="font-medium">Error</p>
+                      <p className="text-sm">{checkoutError}</p>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {checkoutSuccess && (
-                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-start">
-                  <CheckCircle
-                    size={18}
-                    className="mr-3 mt-0.5 flex-shrink-0"
-                  />
-                  <div>
-                    <p className="font-medium">Success</p>
-                    <p className="text-sm">{checkoutSuccess}</p>
+                {checkoutSuccess && (
+                  <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-start">
+                    <CheckCircle
+                      size={18}
+                      className="mr-3 mt-0.5 flex-shrink-0"
+                    />
+                    <div>
+                      <p className="font-medium">Success</p>
+                      <p className="text-sm">{checkoutSuccess}</p>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              <div className="space-y-8">
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <MapPin size={20} className="text-indigo-600" />
-                    Shipping Address
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="relative group">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Address Line 1*
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          name="addressLine1"
-                          value={shippingAddress.addressLine1}
-                          onChange={handleInputChange}
-                          className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                          placeholder="House No., Building Name"
-                          required
-                        />
-                        <MapPin
-                          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500"
-                          size={18}
-                        />
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <CreditCard size={20} className="text-indigo-600" />
+                      Select Payment Method
+                    </h3>
+
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      {paymentMethods.map(
+                        ({ method: methodItem, logo, label }) => (
+                          <PaymentMethodButton
+                            key={methodItem}
+                            method={methodItem}
+                            selectedMethod={paymentMethod}
+                            logo={logo}
+                            label={label}
+                            onClick={() => setPaymentMethod(methodItem)}
+                          />
+                        )
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
+                    <h3 className="font-semibold mb-4 text-gray-800">
+                      Order Summary
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Order ID:</span>
+                        <span className="font-medium">{selectedOrder._id}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Status:</span>
+                        <StatusPill status={selectedOrder.status} />
+                      </div>
+                      <div className="border-t my-3 pt-3">
+                        <div className="flex justify-between font-medium">
+                          <span>Total Amount:</span>
+                          <span className="text-lg text-indigo-600">
+                            ₹{selectedOrder.price}
+                          </span>
+                        </div>
                       </div>
                     </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Address Line 2 (Optional)
-                      </label>
-                      <input
-                        type="text"
-                        name="addressLine2"
-                        value={shippingAddress.addressLine2}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="Apartment, Street, Locality"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        City*
-                      </label>
-                      <input
-                        type="text"
-                        name="city"
-                        value={shippingAddress.city}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        State/Province*
-                      </label>
-                      <input
-                        type="text"
-                        name="state"
-                        value={shippingAddress.state}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        PIN/Postal Code*
-                      </label>
-                      <input
-                        type="text"
-                        name="postalCode"
-                        value={shippingAddress.postalCode}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        required
-                      />
-                    </div>
-
-                    <div className="relative group">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Phone Number*
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="tel"
-                          name="phoneNumber"
-                          value={shippingAddress.phoneNumber}
-                          onChange={handleInputChange}
-                          className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                          placeholder="10-digit mobile number"
-                          required
-                        />
-                        <Phone
-                          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500"
-                          size={18}
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Country
-                      </label>
-                      <select
-                        name="country"
-                        value={shippingAddress.country}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                      >
-                        <option value="India">India</option>
-                      </select>
-                    </div>
                   </div>
                 </div>
+              </div>
 
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <CreditCard size={20} className="text-indigo-600" />
-                    Payment Method
-                  </h3>
+              <div className="p-6 border-t bg-gray-50">
+                <div className="flex justify-between">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsPaymentModalOpen(false);
+                      setIsModalOpen(true);
+                    }}
+                    disabled={processingOrder}
+                  >
+                    Back
+                  </Button>
 
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    {paymentMethods.map(
-                      ({ method: methodItem, logo, label }) => (
-                        <PaymentMethodButton
-                          key={methodItem}
-                          method={methodItem}
-                          selectedMethod={paymentMethod}
-                          logo={logo}
-                          label={label}
-                          onClick={() => setPaymentMethod(methodItem)}
-                        />
-                      )
+                  <Button
+                    className="bg-indigo-600 hover:bg-indigo-700 min-w-[180px]"
+                    onClick={() => handleMakePayment(selectedOrder._id)}
+                    disabled={processingOrder || !paymentMethod}
+                  >
+                    {processingOrder ? (
+                      <>
+                        <Loader2 size={16} className="mr-2 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard size={16} className="mr-2" />
+                        {paymentMethod === "razorpay"
+                          ? `Pay ₹${selectedOrder.price}`
+                          : "Place Order"}
+                      </>
                     )}
-                  </div>
+                  </Button>
                 </div>
-
-                <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-                  <h3 className="font-semibold mb-4 text-gray-800">
-                    Order Summary
-                  </h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Design:</span>
-                      <span className="font-medium">
-                        {selectedOrder.design.style}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Fabric:</span>
-                      <span className="font-medium">
-                        {selectedOrder.design.fabric}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Color:</span>
-                      <span className="font-medium">
-                        {selectedOrder.design.color}
-                      </span>
-                    </div>
-
-                    <div className="border-t my-3 pt-3">
-                      <div className="flex justify-between font-medium">
-                        <span>Total Amount:</span>
-                        <span className="text-lg text-indigo-600">
-                          ₹{selectedOrder.price}
-                        </span>
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">
-                        (Includes all taxes and shipping charges)
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-6 border-t bg-gray-50">
-              <div className="flex justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsAcceptingBid(false)}
-                  disabled={processingOrder}
-                >
-                  Back
-                </Button>
-
-                <Button
-                  className="bg-indigo-600 hover:bg-indigo-700 min-w-[180px]"
-                  onClick={handleAcceptBid}
-                  disabled={processingOrder}
-                >
-                  {processingOrder ? (
-                    <>
-                      <Loader2 size={16} className="mr-2 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle size={16} className="mr-2" />
-                      {paymentMethod === "razorpay"
-                        ? `Pay ₹${selectedOrder.price}`
-                        : "Place Order"}
-                    </>
-                  )}
-                </Button>
               </div>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Payment Modal */}
-      {isPaymentModalOpen && selectedOrder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-md flex flex-col shadow-2xl border border-gray-200">
-            <div className="p-6 border-b flex justify-between items-center bg-gradient-to-r from-indigo-50 to-purple-50">
-              <div>
-                <h2 className="text-xl font-bold">Complete Payment</h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  Order #{selectedOrder._id.slice(-6)} - Amount: ₹
-                  {selectedOrder.price}
-                </p>
-              </div>
-              <button
-                onClick={() => setIsPaymentModalOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-full"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-6">
-              {checkoutError && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-start">
-                  <AlertCircle
-                    size={18}
-                    className="mr-3 mt-0.5 flex-shrink-0"
-                  />
-                  <div>
-                    <p className="font-medium">Error</p>
-                    <p className="text-sm">{checkoutError}</p>
-                  </div>
-                </div>
-              )}
-
-              {checkoutSuccess && (
-                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-start">
-                  <CheckCircle
-                    size={18}
-                    className="mr-3 mt-0.5 flex-shrink-0"
-                  />
-                  <div>
-                    <p className="font-medium">Success</p>
-                    <p className="text-sm">{checkoutSuccess}</p>
-                  </div>
-                </div>
-              )}
-
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <CreditCard size={20} className="text-indigo-600" />
-                    Select Payment Method
-                  </h3>
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    {paymentMethods.map(
-                      ({ method: methodItem, logo, label }) => (
-                        <PaymentMethodButton
-                          key={methodItem}
-                          method={methodItem}
-                          selectedMethod={paymentMethod}
-                          logo={logo}
-                          label={label}
-                          onClick={() => setPaymentMethod(methodItem)}
-                        />
-                      )
-                    )}
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 p-5 rounded-xl border border-gray-200">
-                  <h3 className="font-semibold mb-4 text-gray-800">
-                    Order Summary
-                  </h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Order ID:</span>
-                      <span className="font-medium">{selectedOrder._id}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Status:</span>
-                      <StatusPill status={selectedOrder.status} />
-                    </div>
-                    <div className="border-t my-3 pt-3">
-                      <div className="flex justify-between font-medium">
-                        <span>Total Amount:</span>
-                        <span className="text-lg text-indigo-600">
-                          ₹{selectedOrder.price}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-6 border-t bg-gray-50">
-              <div className="flex justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setIsPaymentModalOpen(false);
-                    setIsModalOpen(true);
-                  }}
-                  disabled={processingOrder}
-                >
-                  Back
-                </Button>
-
-                <Button
-                  className="bg-indigo-600 hover:bg-indigo-700 min-w-[180px]"
-                  onClick={() => handleMakePayment(selectedOrder._id)}
-                  disabled={processingOrder || !paymentMethod}
-                >
-                  {processingOrder ? (
-                    <>
-                      <Loader2 size={16} className="mr-2 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <CreditCard size={16} className="mr-2" />
-                      {paymentMethod === "razorpay"
-                        ? `Pay ₹${selectedOrder.price}`
-                        : "Place Order"}
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
