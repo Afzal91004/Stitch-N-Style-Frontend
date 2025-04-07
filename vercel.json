@@ -1,8 +1,17 @@
 {
   "rewrites": [
     {
+      "source": "/designer/:path*",
+      "destination": "/designer/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/"
     }
-  ]
+  ],
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  }
 }
