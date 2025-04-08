@@ -221,11 +221,11 @@ const OrderCard = ({ order, onViewDetails, onAcceptBid }) => {
       <div className="flex flex-col sm:flex-row">
         {/* Left column with image */}
         <div className="w-full sm:w-1/3 lg:w-1/4 relative">
-          <div className="aspect-square sm:h-full relative">
+          <div className="sm:h-full relative">
             {order.referenceImages && order.referenceImages[0] ? (
-              <div className="aspect-square md:h-full relative">
+              <div className="md:h-full relative">
                 <img
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                   src={order.referenceImages[0]}
                   alt="Custom design reference"
                 />
